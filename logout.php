@@ -1,0 +1,1 @@
+<h1>- Script para fazer logout do usuário</h1>
