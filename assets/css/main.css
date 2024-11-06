@@ -2,26 +2,25 @@
     display: block;
     text-align: center;
 }
-/* Estilos do tema claro */
-body {
-    background-color: #ffffff;
-    color: #000000;
-}
 
-.navbar {
-    background-color: #f8f9fa; /* Cor da navbar no tema claro */
+.container-custom {
+  max-width: 960px;
+  margin-top: 50px;
 }
-
-/* Estilos do tema escuro */
-body.dark-mode {
-    background-color: #343a40; /* Cor de fundo no tema escuro */
-    color: #ffffff; /* Cor do texto no tema escuro */
+.form-header {
+  font-weight: 700;
+  color: #6c757d;
 }
-
-.dark-mode .navbar {
-    background-color: #495057; /* Cor da navbar no tema escuro */
+.btn-primary {
+  background-color: #712cf9;
+  border: none;
 }
-
-.dark-mode .btn-primary {
-    background-color: #007bff; /* Cor do botão no tema escuro */
+.btn-primary:hover {
+  background-color: #5a23c8;
+}
+.form-section {
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }

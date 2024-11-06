@@ -50,48 +50,6 @@
 
 
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero bg-light text-center py-5">
-            <div class="container">
-                <h1 class="display-4">Localize Vagas de Estacionamento</h1>
-                <p class="lead">Encontre e reserve o estacionamento perfeito para você.</p>
-                <main class="container my-5">
-                    <section>
-                        <form class="row g-3" action="busca.php" method="GET">
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" placeholder="Digite sua localização ou destino" required name="localizacao">
-                            </div>
-                            <div class="col-md-1">
-                                <button type="submit" class="btn btn-primary btn-lg">Buscar</button>
-                            </div>
-                        </form>
-                    </section>
-
-            </div>
-        </div>
-    </section>
-
-    <section class="user">
-        <!-- Features Section -->
-        <div class="container my-5">
-            <div class="row">
-                <div class="col-md-4 text-center">
-                    <h3>Fácil de Usar</h3>
-                    <p>Reserve seu estacionamento em apenas alguns cliques.</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h3>Preços Competitivos</h3>
-                    <p>Compare os preços e encontre a melhor oferta.</p>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h3>Suporte 24/7</h3>
-                    <p>Estamos aqui para ajudar sempre que precisar.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="bg-light text-center py-4">
         <div class="container">
