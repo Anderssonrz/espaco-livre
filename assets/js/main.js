@@ -1,3 +1,5 @@
+//exemplo de variavel para colocar no modo escuro a pagina
+
 const themeToggleButton = document.getElementById('theme-toggle');
 
 const currentTheme = localStorage.getItem('theme');
@@ -14,3 +16,15 @@ themeToggleButton.addEventListener('click', () => {
         localStorage.setItem('theme', 'light');
     }
 });
+document.getElementById("placa").addEventListener("input", function (e) {
+    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (value.length > 3) value = value.slice(0, 3) + '-' + value.slice(3);
+    e.target.value = value;
+});
+document.querySelector("form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    alert("Veículo cadastrado com sucesso!");
+});
+
+
+

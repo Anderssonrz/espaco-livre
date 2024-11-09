@@ -1,39 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login e Cadastro · Estacionamento</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espaço Livre</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-
-
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <!-- CSS personalizado -->
+  <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+  <!-- Bootstrap JS Bundle (incluso o Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="index.php">Espaço<br>Livre</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="#hero">Sobre</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#user">Suporte</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-primary text-black" href="login.php">Login</a>
-        </li>
 
-      </ul>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="index.php">Espaço<br>Livre</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#hero">Sobre</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#user">Suporte</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn btn-primary text-black" href="login.php">Login</a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
+
 
 <body class="bg-light">
   <div class="container container-custom">
@@ -63,35 +67,7 @@
         </div>
       </div>
 
-      <!-- Cadastro Form -->
-      <div class="col-md-6">
-        <div class="form-section">
-          <h2 class="form-header text-center mb-4">Cadastre-se</h2>
-          <form action="/" method="post">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="first-name" class="form-label">Nome</label>
-                <input type="text" id="first-name" class="form-control" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="last-name" class="form-label">Sobrenome</label>
-                <input type="text" id="last-name" class="form-control" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="signup-email" class="form-label">Email</label>
-              <input type="email" id="signup-email" class="form-control" required>
-            </div>
-            <div class="mb-3">
-              <label for="signup-password" class="form-label">Senha</label>
-              <input type="password" id="signup-password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+    
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

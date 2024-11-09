@@ -1,1 +1,8 @@
-<h1>- Script para fazer logout do usuário</h1>
+<?php
+
+session_start();
+session_unset();
+session_destroy();
+header ("Location: index.php");
+
+?>
