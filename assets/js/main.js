@@ -1,30 +1,52 @@
-//exemplo de variavel para colocar no modo escuro a pagina
+// Variável para armazenar a última posição de rolagem e a navbar
+let lastScrollTop = 0; 
+const navbar = document.getElementById('navbar');
 
-const themeToggleButton = document.getElementById('theme-toggle');
+// Evento de rolagem para ocultar ou mostrar a navbar
+window.addEventListener('scroll', () => {
+  const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
 
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme === 'dark') {
-    document.body.classList.add('dark-mode');
+  if (currentScroll > lastScrollTop) {
+    // Rolagem para baixo - esconder a navbar
+    navbar.classList.add('hidden');
+  } else {
+    // Rolagem para cima - mostrar a navbar
+    navbar.classList.remove('hidden');
+  }
+
+  // Previne valores negativos de rolagem
+  lastScrollTop = Math.max(currentScroll, 0);
+});
+
+// Função para inicializar o mapa
+function initMap() {
+    // Coordenadas do estacionamento (exemplo)
+    const location = { lat: 40.7128, lng: -74.0059 };  // Localização do City Hall, NYC
+
+    // Criar o mapa
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: location,
+        mapTypeId: "roadmap",
+    });
+
+    // Adicionar um marcador no mapa
+    const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: "Estacionamento - City Hall",
+    });
+
+    // Informação adicional que aparece ao clicar no marcador
+    const infoWindow = new google.maps.InfoWindow({
+        content: "<strong>Estacionamento - City Hall</strong><br>260 E Broadway, NY 10007",
+    });
+
+    // Evento de clique no marcador
+    marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+    });
 }
 
-themeToggleButton.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-
-    if (document.body.classList.contains('dark-mode')) {
-        localStorage.setItem('theme', 'dark');
-    } else {
-        localStorage.setItem('theme', 'light');
-    }
-});
-document.getElementById("placa").addEventListener("input", function (e) {
-    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (value.length > 3) value = value.slice(0, 3) + '-' + value.slice(3);
-    e.target.value = value;
-});
-document.querySelector("form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    alert("Veículo cadastrado com sucesso!");
-});
-
-
-
+// Garantir que o mapa seja inicializado após o carregamento do script
+window.initMap = initMap;

@@ -1,3 +1,13 @@
+/* Definindo variáveis para cores */
+:root {
+  --preto: #000000;
+  --amarelo-primario: #FFD700; /* Amarelo ouro */
+  --amarelo-escuro: #E6B800;   /* Amarelo mais escuro */
+  --cinza-claro: #F5F5F5;
+  --cinza-texto: #333333;
+  --branco: #FFFFFF;
+}
+
 /* Reset básico para evitar problemas com margens/paddings padrão */
 * {
   margin: 0;
@@ -7,17 +17,19 @@
 
 /* Corpo e fonte do site */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #F5F5F5; /* Cinza Claro */
-  color: #333333; /* Cinza Escuro */
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background-color: var(--cinza-claro);
+  color: var(--preto);
   line-height: 1.6;
 }
 
 /* Estilo do header */
 header {
-  background-color: #333333; /* Cinza Escuro */
+  background-color: var(--preto);
+  color: var(--amarelo-primario);
   padding: 20px;
-  color: #FFFFFF;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -32,24 +44,29 @@ header nav ul {
 }
 
 header nav ul li {
-  display: inline;
+  display: inline-block;
   margin-right: 20px;
 }
 
 header nav ul li a {
-  color: #FFFFFF;
+  color: var(--amarelo-primario);
   text-decoration: none;
   font-size: 1.1rem;
+  transition: color 0.3s ease;
 }
 
 header nav ul li a:hover {
   text-decoration: underline;
 }
 
+header nav ul li a:focus {
+  outline: 2px solid var(--amarelo-primario);
+}
+
 /* Estilo da seção principal (hero) */
 .hero {
-  background-color: #5E9BCF; /* Azul Claro */
-  color: #FFFFFF;
+  background-color: var(--amarelo-primario);
+  color: var(--preto);
   padding: 60px 20px;
   text-align: center;
 }
@@ -60,8 +77,8 @@ header nav ul li a:hover {
 }
 
 .hero .btn-reservar {
-  background-color: #4A8D5A; /* Verde Musgo */
-  color: #FFFFFF;
+  background-color: var(--preto);
+  color: var(--amarelo-primario);
   border: none;
   padding: 15px 30px;
   font-size: 1.2rem;
@@ -71,12 +88,16 @@ header nav ul li a:hover {
 }
 
 .hero .btn-reservar:hover {
-  background-color: #3D7B47; /* Tom mais escuro de verde */
+  background-color: var(--amarelo-escuro);
+}
+
+.hero .btn-reservar:focus {
+  outline: none;
 }
 
 /* Estilo da seção sobre */
 .sobre {
-  background-color: #FFFFFF;
+  background-color: var(--branco);
   padding: 40px 20px;
   text-align: center;
 }
@@ -88,61 +109,189 @@ header nav ul li a:hover {
 
 .sobre p {
   font-size: 1.1rem;
-  color: #666666; /* Cinza claro */
+  color: var(--cinza-texto);
 }
 
 /* Estilo do footer */
 footer {
-  background-color: #333333; /* Cinza Escuro */
-  color: #FFFFFF;
+  background-color: var(--preto);
+  color: var(--amarelo-primario);
   padding: 10px;
   text-align: center;
+}
+
+footer a {
+  color: var(--amarelo-primario);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--amarelo-escuro);
+}
+
+footer a:focus {
+  outline: 2px solid var(--amarelo-primario);
 }
 
 /* Responsividade */
 @media (max-width: 768px) {
   header nav ul {
-      text-align: center;
-      margin-top: 10px;
+    text-align: center;
+    margin-top: 10px;
   }
 
   header nav ul li {
-      display: block;
-      margin-bottom: 10px;
+    display: block;
+    margin-bottom: 10px;
   }
 
   .hero h2 {
-      font-size: 2rem;
+    font-size: 2rem;
   }
 
-  .btn-reservar {
-      padding: 12px 25px;
+  .hero .btn-reservar {
+    padding: 12px 25px;
   }
+}
+
+/* Navbar oculta quando rola para baixo */
+#navbar {
+  transition: top 0.3s ease-in-out, opacity 0.3s ease;
+  background-color: var(--amarelo) !important;
+  color: var(--preto) !important;
+}
+
+#navbar.hidden {
+  top: -80px;
+  opacity: 0;
+}
+
+#navbar:hover {
+  top: 0;
+  opacity: 1;
 }
 
 .navbar-brand {
-    display: block;
-    text-align: center;
+  display: block;
+  text-align: center;
 }
 
+#navbar a {
+  color: var(--preto) !important;
+  transition: color 0.3s ease;
+}
 .container-custom {
   max-width: 960px;
   margin-top: 50px;
 }
+
 .form-header {
   font-weight: 700;
-  color: #6c757d;
+  color: var(--preto);
 }
+
 .btn-primary {
-  background-color: #712cf9;
+  background-color: var(--amarelo-primario);
   border: none;
+  color: var(--preto);
 }
+
 .btn-primary:hover {
-  background-color: #5a23c8;
+  background-color: var(--amarelo-escuro);
 }
+
 .form-section {
   padding: 2rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--preto);
   border-radius: 8px;
   background-color: #f9f9f9;
+}
+
+/* Seção Hero ("Estacione Fácil em Jaraguá") */
+.hero {
+  background-color: var(--amarelo);
+  color: var(--preto);
+}
+
+.hero h2 {
+  font-size: 2.5rem;
+}
+.hero .btn-reservar {
+  background-color: var(--preto);
+  color: var(--branco);
+}
+
+/* Imagens e Benefícios */
+.beneficios {
+  background-color: var(--preto);
+  color: var(--branco);
+}
+
+/* Preços */
+.precos {
+  background-color: var(--amarelo);
+  color: var(--preto);
+}
+
+/* Estacionamento Fácil e Compartilhado */
+.estacionamento-facil {
+  background-color: var(--preto);
+  color: var(--branco);
+}
+
+/* Carrossel de Depoimentos */
+.depoimentos {
+  background-color: var(--amarelo);
+  color: var(--preto);
+}
+
+/* Dúvidas Frequentes */
+.duvidas-frequentes {
+  background-color: var(--preto);
+  color: var(--branco);
+}
+
+/* Footer */
+footer {
+  background-color: var(--preto);
+  color: var(--branco);
+}
+
+footer a {
+  color: var(--branco) !important;
+}
+.carousel-item {
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-container {
+  text-align: center;
+}
+
+.carousel-container h1 {
+  color: var(--preto);
+}
+
+.carousel-container p {
+  color: var(--preto);
+}
+
+
+
+
+
+
+
+
+.bg-gray-100 {
+  background-color: #f7f7f7;
+}
+.text-gray-800 {
+  color: #333;
+}
+.shadow-md {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
