@@ -1,22 +1,3 @@
-// Variável para armazenar a última posição de rolagem e a navbar
-let lastScrollTop = 0; 
-const navbar = document.getElementById('navbar');
-
-// Evento de rolagem para ocultar ou mostrar a navbar
-window.addEventListener('scroll', () => {
-  const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-
-  if (currentScroll > lastScrollTop) {
-    // Rolagem para baixo - esconder a navbar
-    navbar.classList.add('hidden');
-  } else {
-    // Rolagem para cima - mostrar a navbar
-    navbar.classList.remove('hidden');
-  }
-
-  // Previne valores negativos de rolagem
-  lastScrollTop = Math.max(currentScroll, 0);
-});
 
 // Função para inicializar o mapa
 function initMap() {

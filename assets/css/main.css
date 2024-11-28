@@ -155,32 +155,7 @@ footer a:focus {
   }
 }
 
-/* Navbar oculta quando rola para baixo */
-#navbar {
-  transition: top 0.3s ease-in-out, opacity 0.3s ease;
-  background-color: var(--amarelo) !important;
-  color: var(--preto) !important;
-}
 
-#navbar.hidden {
-  top: -80px;
-  opacity: 0;
-}
-
-#navbar:hover {
-  top: 0;
-  opacity: 1;
-}
-
-.navbar-brand {
-  display: block;
-  text-align: center;
-}
-
-#navbar a {
-  color: var(--preto) !important;
-  transition: color 0.3s ease;
-}
 .container-custom {
   max-width: 960px;
   margin-top: 50px;
@@ -226,12 +201,6 @@ footer a:focus {
 .beneficios {
   background-color: var(--preto);
   color: var(--branco);
-}
-
-/* Preços */
-.precos {
-  background-color: var(--amarelo);
-  color: var(--preto);
 }
 
 /* Estacionamento Fácil e Compartilhado */
