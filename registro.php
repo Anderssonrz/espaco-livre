@@ -97,46 +97,21 @@
             <form>
                 <!-- Seção 1 - Dados Pessoais -->
                 <div class="section-header">Dados Pessoais</div>
-
+                
                 <div class="form-group">
-                    <label for="dataCadastro" class="form-label label-obrigatorio">Data Cadastro</label>
-                    <input type="date" id="dataCadastro" name="dataCadastro" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="idCliente" class="form-label">Código Cliente</label>
-                    <input type="text" id="idCliente" name="idCliente" class="form-control" required readonly>
-                </div>
-
-                <div class="form-group">
-                    <label for="pessoaTipo" class="form-label label-obrigatorio">Pessoa Física/Jurídica</label>
-                    <select id="pessoaTipo" name="pessoaTipo" class="form-control" required>
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="Física">Pessoa Física</option>
-                        <option value="Jurídica">Pessoa Jurídica</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="cpfCnpj" class="form-label label-obrigatorio">CPF/CNPJ</label>
-                    <input type="text" id="cpfCnpj" name="cpfCnpj" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="nomeRazaoSocial" class="form-label label-obrigatorio">Nome/Razão Social</label>
+                    <label for="nomeRazaoSocial" class="form-label label-obrigatorio">Nome completo</label>
                     <input type="text" id="nomeRazaoSocial" name="nomeRazaoSocial" class="form-control" required>
                 </div>
-
-                <div class="section-divider"></div>
-
-                <!-- Seção 2 - Documentos -->
-                <div class="section-header">Documentos</div>
-
-                <div class="form-group">
-                    <label for="rg" class="form-label label-obrigatorio">RG</label>
-                    <input type="text" id="rg" name="rg" class="form-control" required>
+                
+                    <div class="form-group">
+                    <label for="nascimento" class="form-label label-obrigatorio">Data de nascimento</label>
+                    <input type="date" id="nascimento" name="nascimento" class="form-control" required>
                 </div>
-
+                
+                <div class="form-group">
+                    <label for="cpfCnpj" class="form-label label-obrigatorio">CPF</label>
+                    <input type="text" id="cpfCnpj" name="cpfCnpj" class="form-control" required>
+                </div>
                 <div class="form-group">
                     <label for="cnh" class="form-label label-obrigatorio">CNH</label>
                     <input type="text" id="cnh" name="cnh" class="form-control" required>
@@ -177,35 +152,44 @@
                     <input type="text" id="cep" name="cep" class="form-control" required>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <!-- Seção 4 - Contato -->
-                <div class="section-header">Contato</div>
-
+                <div class="form-group">
+                    <label for="complemento" class="form-label label-obrigatorio">Complemento</label>
+                    <input type="text" id="complemento" name="complemento" class="form-control" required>
+                </div>
                 <div class="form-group">
                     <label for="telefone" class="form-label label-obrigatorio">Telefone</label>
                     <input type="text" id="telefone" name="telefone" class="form-control" required>
                 </div>
+                
+                
+
+                <div class="section-divider"></div>
+
+                <!-- Seção 4 - Login -->
+                <div class="section-header">Login</div>
+
 
                 <div class="form-group">
                     <label for="email" class="form-label label-obrigatorio">E-mail</label>
                     <input type="email" id="email" name="email" class="form-control" required>
                 </div>
-
-                <div class="section-divider"></div>
-
-                <!-- Seção 5 - Vaga e Veículo -->
-                <div class="section-header">Vaga e Veículo</div>
-
                 <div class="form-group">
-                    <label for="idVaga" class="form-label label">Código Vaga</label>
-                    <input type="text" id="idVaga" name="idVaga" class="form-control" required>
+                    <label for="senha" class="form-label label-obrigatorio">Digite uma senha</label>
+                    <input type="senha" id="senha" name="senha" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="novamente" class="form-label label-obrigatorio">Digite sua senha novamente</label>
+                    <input type="novamente" id="novamente" name="novamente" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="dataCadastro" class="form-label label-obrigatorio">Data de Cadastro</label>
+                    <input type="date" id="dataCadastro" name="dataCadastro" class="form-control" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="idVeiculo" class="form-label label">Código Veículo</label>
-                    <input type="text" id="idVeiculo" name="idVeiculo" class="form-control" required>
                 </div>
+                
+                    
+
                 
                 <!-- Botão de Envio -->
                 <div class="row mt-4">
@@ -220,6 +204,16 @@
     </div>
 
     <script src="assets/js/main.js"></script>
+    <script>
+        // Obtendo a data atual
+        const dataAtual = new Date();
+
+        // Formatando a data para o formato YYYY-MM-DD
+        const dataFormatada = dataAtual.toISOString().split('T')[0];
+
+        // Definindo o valor do input de data
+        document.getElementById('dataCadastro').value = dataFormatada;
+    </script>
 </body>
 
 </html>
