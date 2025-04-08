@@ -1,0 +1,270 @@
+
+
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '1'
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '1'
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = ''
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = ''
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '3'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '1'
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuario SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro no editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='Jaraguá do Sul', bairro='Água Verde', endereco='Carlos Harth', numero='1570', complemento='Em frente ao Cooper', 
+        foto_vaga='', preco='1200', lat='2224', lng='2224', id_usuario='1', id_uf='24'
+        WHERE id = '1'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='Jaraguá do Sul', bairro='Água Verde', endereco='Carlos Harth', numero='1570', complemento='Em frente ao Cooper', 
+        foto_vaga='', preco='1200', lat='2224', lng='2224', id_usuario='1', id_uf='24'
+        WHERE id = '1'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = ''
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar usuário: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuario: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuario: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuario: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha=''
+        WHERE id = '2'
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: UPDATE usuarios SET nome='', cpf='', telefone='', email='', senha='', dataCadastro=''
+        WHERE id = '2'
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar usuario: 
+ Erro ao editar usuario: 
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro ao editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'
+ Erro no editar vaga: UPDATE vagas SET descricao='', cidade='', bairro='', endereco='', numero='', complemento='', 
+        foto_vaga='', preco='', lat='', lng='', id_usuario='', id_uf=''
+        WHERE id = '1'

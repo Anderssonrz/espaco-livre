@@ -3,111 +3,17 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
-  <!-- Meta Tags de SEO -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Encontre e reserve o estacionamento ideal com Espaço Livre - Fácil, rápido e seguro.">
-  <meta name="keywords" content="aluguel de estacionamento,ganhe com vagas livres,transformar espaço vazio em lucro,compartilhar vagas de estacionamento,alugar vaga de estacionamento,airBNB de estacionamento,Jaraguá do Sul estacionamento,Espaço Livre estacionamento,estacionamento lucrativo,ganhar dinheiro com vagas livres,aluguel de vagas em Jaraguá do Sul,plataforma de aluguel de estacionamento,ganhar dinheiro com estacionamento,estacionamento compartilhado,Espaço Livre SC,plataforma de estacionamento Jaraguá do Sul" />
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="Espaço Livre">
-  <link rel="canonical" href="https://seusite.com">
-
-
-<!-- Meta Tags de SEO -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Encontre e reserve o estacionamento ideal com Espaço Livre - Fácil, rápido e seguro.">
-<meta name="keywords" content="aluguel de estacionamento, ganhar com vagas livres, transformar espaço vazio em lucro, compartilhar vagas de estacionamento, alugar vaga de estacionamento, airBNB de estacionamento, Jaraguá do Sul estacionamento, Espaço Livre estacionamento, estacionamento lucrativo, ganhar dinheiro com vagas livres, aluguel de vagas em Jaraguá do Sul, plataforma de aluguel de estacionamento, ganhar dinheiro com estacionamento, estacionamento compartilhado, Espaço Livre SC, plataforma de estacionamento Jaraguá do Sul">
-<meta name="author" content="Espaço Livre">
-<meta name="robots" content="index, follow">
-
-<!-- URL Canonical -->
-<link rel="canonical" href="https://seusite.com">
-
-<!-- Open Graph Tags -->
-<meta property="og:title" content="Espaço Livre - Encontre seu Estacionamento">
-<meta property="og:description" content="Reserve sua vaga de estacionamento em poucos cliques com o melhor custo-benefício.">
-<meta property="og:image" content="assets/img/slide/map.jpg">
-<meta property="og:url" content="https://seusite.com">
-
-<!-- Meta Tags para Redes Sociais (Twitter) -->
-<meta name="twitter:title" content="Espaço Livre - Encontre seu Estacionamento">
-<meta name="twitter:description" content="Reserve sua vaga de estacionamento em poucos cliques com o melhor custo-benefício.">
-<meta name="twitter:card" content="summary_large_image">
-
-<!-- Meta Tags Internacionais -->
-<meta http-equiv="Content-Language" content="pt-BR">
-<meta name="robots" content="all">
-
-
-
-  <title>Espaço Livre - Encontre o Estacionamento Ideal</title>
- 
-  <!-- Bootstrap CSS-->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Ícones Bootstrap -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css">
-
-  <!-- CSS personalizado -->
-  <link rel="stylesheet" href="assets/css/main.css">
-
-   <!-- Google Fonts -->
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Abel&family=Bebas+Neue&display=swap" rel="stylesheet">
-
-
-  <!-- Transição suave para hover -->
-  <style>
-    .nav-link,
-    .btn,
-    footer a {
-      transition: color 0.3s, background-color 0.3s;
-    }
-
-    .btn:hover,
-    .nav-link:hover {
-      background-color: #0069d9;
-      transform: scale(1.05);
-    }
-
-    .back-to-top:hover {
-      color: #007bff;
-    }
-
-    .lazy {
-      display: none;
-    }
-
-    img.lazy.loaded {
-      display: block;
-      transition: opacity 0.5s ease-in-out;
-    }
-  </style>
-</head>
+    <!-- Título -->
+    <?php
+  $pageTitle = 'Espaço Livre - Encontre o Estacionamento Ideal';
+  require_once 'components/head.php';
+  
+?>
 
 <body>
 
-
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" id="navbar">
-    <div class="container">
-      <a class="navbar-brand" href="index.php" aria-label="Página inicial">Espaço<br>Livre</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link text-dark" href="#hero" aria-label="Ir para a seção Sobre">Sobre</a></li>
-          <li class="nav-item"><a class="nav-link text-dark" href="#user" aria-label="Ir para a seção Suporte">Suporte</a></li>
-          <li class="nav-item"><a class="nav-link btn btn-primary text-white px-4" href="login.php" aria-label="Fazer login">Login</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <?php require_once 'components/navbar.php'; ?>
 
   <!-- Seção Hero -->
   <section id="hero" class="pt-0" style="height: 100vh; background-image: url('assets/img/slide/map.jpg'); background-size: cover; background-position: center;">
@@ -115,8 +21,8 @@
       <div class="carousel-inner">
         <div class="carousel-item active" style="height: 100%; display: flex; align-items: center; padding-top: 15vh;">
           <div class="container text-center">
-            <h1 class="display-4 text-white">Localize Vagas de Estacionamento</h1>
-            <p class="lead text-white">Encontre e reserve o estacionamento perfeito para você.</p>
+            <h1 class="display-4 text-back">Localize Vagas de Estacionamento</h1>
+            <p class="lead text-back">Encontre e reserve o estacionamento perfeito para você.</p>
             <form id="search-form" class="row g-3 justify-content-center" action="busca.php" method="GET">
               <div class="col-md-8 col-lg-6">
                 <input type="text" class="form-control" placeholder="Digite sua localização ou destino" name="localizacao" required aria-label="Buscar localização">
@@ -164,22 +70,22 @@
         <h2 class="text-3xl font-semibold text-gray-800 mb-8">ESTACIONAMENTOS SIMPLES E SEGURO</h2>
         <div class="row g-4">
           <div class="col-md-3">
-            <img src="assets/img/slide/estacionamentogrande.jpg" alt="Reserva Fácil de Vagas" class="img-fluid" title="Estacionamento Simples e Seguro">
+            <img src="../assets/img/slide/estacionamentogrande.jpg" alt="Reserva Fácil de Vagas" class="img-fluid" title="Estacionamento Simples e Seguro">
             <h4 class="text-lg font-semibold text-gray-700 mb-2">Reserva Fácil de Vagas</h4>
             <p class="text-gray-500">Encontre e reserve vagas de estacionamento em minutos, sem complicações.</p>
           </div>
           <div class="col-md-3">
-            <img src="assets/img/slide/gestora.jpg" alt="Gestão de Espaços Ocupados" class="img-fluid" title="Gestão de Espaços Ocupados">
+            <img src="../assets/img/slide/gestora.jpg" alt="Gestão de Espaços Ocupados" class="img-fluid" title="Gestão de Espaços Ocupados">
             <h4 class="text-lg font-semibold text-gray-700 mb-2">Gestão de Espaços Ocupados</h4>
             <p class="text-gray-500">Controle total sobre suas vagas, maximizando o uso eficiente do espaço.</p>
           </div>
           <div class="col-md-3">
-            <img src="assets/img/slide/criança.jpg" alt="Pagamentos Seguros" class="img-fluid" title="Pagamentos Seguros e Simples">
+            <img src="../assets/img/slide/criança.jpg" alt="Pagamentos Seguros" class="img-fluid" title="Pagamentos Seguros e Simples">
             <h4 class="text-lg font-semibold text-gray-700 mb-2">Pagamentos Seguros e Simples</h4>
             <p class="text-gray-500">Facilite transações com nosso sistema de pagamentos, rápido e confiável.</p>
           </div>
           <div class="col-md-3">
-            <img src="assets/img/slide/tablet.jpg" alt="Monitoramento em Tempo Real" class="img-fluid" title="Monitoramento em Tempo Real">
+            <img src="../img/slide/tablet.jpg" alt="Monitoramento em Tempo Real" class="img-fluid" title="Monitoramento em Tempo Real">
             <h4 class="text-lg font-semibold text-gray-700 mb-2">Monitoramento em Tempo Real</h4>
             <p class="text-gray-500"> Acompanhe todas as reservas e a disponibilidade das vagas em tempo real.</p>
           </div>
@@ -196,7 +102,7 @@
       <div class="carousel-inner" role="listbox">
 
         <!-- Slide 1 -->
-        <div class="carousel-item active" style="background-image: url(assets/img/slide/celular.jpg)">
+        <div class="carousel-item active" style="background-image: url(../assets/img/slide/celular.jpg)">
           <div class="carousel-container">
             <div class="container">
             </div>
@@ -204,7 +110,7 @@
         </div>
 
         <!-- Slide 2 -->
-        <div class="carousel-item" style="background-image: url(assets/img/slide/bike.png)">
+        <div class="carousel-item" style="background-image: url(../assets/img/slide/bike.png)">
           <div class="carousel-container">
             <div class="container">
             </div>
@@ -212,7 +118,7 @@
         </div>
 
         <!-- Slide 3 -->
-        <div class="carousel-item" style="background-image: url(assets/img/slide/ciclista.jpg)">
+        <div class="carousel-item" style="background-image: url(../assets/img/slide/ciclista.jpg)">
           <div class="carousel-container">
             <div class="container">
 
@@ -220,7 +126,7 @@
           </div>
         </div>
         <!-- Slide 5 -->
-        <div class="carousel-item" style="background-image: url(assets/img/slide/onibus.jpg)">
+        <div class="carousel-item" style="background-image: url(../assets/img/slide/onibus.jpg)">
           <div class="carousel-container">
             <div class="container">
 
@@ -228,7 +134,7 @@
           </div>
         </div>
         <!-- Slide 5 -->
-        <div class="carousel-item" style="background-image: url(assets/img/slide/eletrico.jpg)">
+        <div class="carousel-item" style="background-image: url(../assets/img/slide/eletrico.jpg)">
           <div class="carousel-container">
             <div class="container">
 
@@ -271,7 +177,7 @@
 
         </div>
         <div class="col-md-6">
-          <img src="assets/img/slide/estacionamentogrande.jpg" alt="Reserva Fácil de Vagas" class="img-fluid rounded shadow-lg" title="Estacionamento Simples e Seguro">
+          <img src="../assets/img/slide/estacionamentogrande.jpg" alt="Reserva Fácil de Vagas" class="img-fluid rounded shadow-lg" title="Estacionamento Simples e Seguro">
         </div>
       </div>
     </div>
@@ -384,18 +290,7 @@
   </section>
 
   <!-- Rodapé -->
-  <footer class="bg-dark text-light text-center py-4">
-    <div class="container">
-      <p>&copy; 2024 Espaço Livre. Todos os direitos reservados.</p>
-      <p>
-        <a href="#" class="text-decoration-none text-white">Termos de Serviço</a> |
-        <a href="#" class="text-decoration-none text-white">Política de Privacidade</a>
-      </p>
-      <a href="#" class="back-to-top d-flex align-items-center justify-content-center text-primary">
-        <i class="bi bi-arrow-up-short fs-4"></i>
-      </a>
-    </div>
-  </footer>
+   <?php require_once 'components/footer.php'; ?>
 
   <!-- Scripts principais -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
