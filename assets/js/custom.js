@@ -19,12 +19,59 @@ loginForm.addEventListener("submit", async (e) => {
 
         const resposta = await dados.json();
 
-        if(resposta['erro']){
+        if (resposta['erro']) {
             msgAlertErroLogin.innerHTML = resposta['msg']
-        }else{
+        } else {
             document.getElementById("dados-usuario").innerHTML = "Bem vindo" + resposta['dados'].nome + "<br><a href='sair.php'>Sair</a><br>";
             loginForm.reset();
             loginModal.hide();
         }
     }
 });
+
+// Seu script custom.js pode conter a lógica para o login via AJAX
+document.addEventListener('DOMContentLoaded', function () {
+    const btnLogin = document.getElementById('btnLogin');
+    const loginForm = document.getElementById('login-usuario-form');
+    const msgAlertErroLogin = document.getElementById('msgAlertErroLogin');
+
+    if (btnLogin && loginForm && msgAlertErroLogin) {
+        btnLogin.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const dadosForm = new FormData(loginForm);
+
+            const response = await fetch("validar_login.php", { // Crie este arquivo para validar o login
+                method: "POST",
+                body: dadosForm,
+            });
+
+            const data = await response.json();
+
+            if (data.erro) {
+                msgAlertErroLogin.innerHTML = `<div class="alert alert-danger">${data.msg}</div>`;
+            } else {
+                // Login bem-sucedido, redirecionar ou atualizar a página
+                window.location.href = "index.php"; // Redireciona para a página inicial
+            }
+        });
+    }
+});
+
+  function toggleDropdown(event) {
+    event.preventDefault();
+    const dropdown = event.currentTarget.parentElement;
+    const menu = dropdown.querySelector(".dropdown-content");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  }
+
+  // Fecha o dropdown ao clicar fora
+  window.addEventListener('click', function (e) {
+    const dropdowns = document.querySelectorAll('.dropdown-content');
+    dropdowns.forEach(menu => {
+      if (!menu.parentElement.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+  });
+
