@@ -193,17 +193,9 @@ require_once 'components/head.php';   // <head> com CSS/meta/ …
             </form>
         </div>
     </div>
-    <footer class="py-5 bg-dark mt-5">
-        <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2025</p>
-        </div>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/scripts.js"></script>
-    <!-- Maskara do cadatro -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <?php require_once 'components/footer.php'; ?>
+
     <script>
         $(document).ready(function() {
             $('#cep').mask('00000-000');

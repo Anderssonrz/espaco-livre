@@ -1,303 +1,222 @@
 <?php
-include_once("conexao.php");
-
-// Iniciar a sessão para verificar se o usuário está logado
+/* ------------- PHP (topo) ------------- */
+include_once 'conexao.php';
 session_start();
-
 
 // Filtros
 $filtros = filter_input_array(INPUT_GET, FILTER_UNSAFE_RAW);
+$filtro_descricao = $filtros['filter']['descricao'] ?? '';
 $filtro_cidade = $filtros['filter']['cidade'] ?? '';
+$filtro_bairro = $filtros['filter']['bairro'] ?? '';
+
+// Novos filtros de preço (mínimo e máximo)
+$filtro_preco_min_get = $filtros['filter']['preco_min'] ?? null;
+$filtro_preco_max_get = $filtros['filter']['preco_max'] ?? null;
+
+// Valores para exibir nos inputs (mantém o que foi submetido, ou usa defaults visuais)
+// Os defaults '0' e '500' correspondem aos `value` iniciais que você definiu no HTML.
+// Ajuste '500' para '1000' se o máximo padrão desejado for 1000.
+$display_preco_min = ($filtro_preco_min_get !== null && $filtro_preco_min_get !== '') ? htmlspecialchars($filtro_preco_min_get) : '0';
+$display_preco_max = ($filtro_preco_max_get !== null && $filtro_preco_max_get !== '') ? htmlspecialchars($filtro_preco_max_get) : '500';
+
 
 // Condições SQL
 $condicoes = [];
-
+if (strlen($filtro_descricao)) {
+    $condicoes[] = 'descricao LIKE "%' . str_replace(' ', '%', $filtro_descricao) . '%"';
+}
 if (strlen($filtro_cidade)) {
-  $condicoes[] = 'cidade LIKE "%' . str_replace(' ', '%', $filtro_cidade) . '%"';
+    $condicoes[] = 'cidade LIKE "%' . str_replace(' ', '%', $filtro_cidade) . '%"';
+}
+if (strlen($filtro_bairro)) {
+    $condicoes[] = 'bairro LIKE "%' . str_replace(' ', '%', $filtro_bairro) . '%"';
+}
+
+// Condições para preço mínimo e máximo
+// Verifica se o valor foi enviado, não é uma string vazia e é numérico
+if ($filtro_preco_min_get !== null && $filtro_preco_min_get !== '' && is_numeric($filtro_preco_min_get)) {
+    $condicoes[] = 'preco >= ' . floatval($filtro_preco_min_get);
+}
+if ($filtro_preco_max_get !== null && $filtro_preco_max_get !== '' && is_numeric($filtro_preco_max_get)) {
+    $condicoes[] = 'preco <= ' . floatval($filtro_preco_max_get);
 }
 
 // Cláusula Where
 $where = !empty($condicoes) ? 'WHERE ' . implode(' AND ', $condicoes) : '';
 ?>
+?>
 
-
+<!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="description" content="Página inicial do sistema de reservas de vagas" />
-  <meta name="author" content="Seu Nome ou Nome da Empresa" />
-  <title>Espaço Livre</title>
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/styles.css" rel="stylesheet" />
-  <link href="css/custom.css" rel="stylesheet" />
-</head>
-
-<body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container px-4 px-lg-5">
-      <a class="navbar-brand" href="#"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="nav justify-content-center">
-          <li class="nav-item">
-            <a class="nav-link active" href="#">
-              <h4>HOME</h4>
-            </a>
-          </li>
-        </ul>
-
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-          <?php if (isset($_SESSION['id']) && $_SESSION['nivel_acesso'] == 2): ?>
-            <li class="nav-item"><a class="nav-link" href="areaRestrita.php">Página Restrita</a></li>
-          <?php else: ?>
-            <li><a href="login.php"></a></li>
-          <?php endif; ?>
-        </ul>
-
-        <form class="d-flex">
-          <?php
-          if (isset($_SESSION['id']) && isset($_SESSION['nome'])) {
-            echo "<div class='dropdown'>";
-            echo "<button class='btn btn-outline-dark dropdown-toggle' type='button' id='userDropdown' data-bs-toggle='dropdown' aria-expanded='false'>";
-            echo "<i class='bi bi-person-fill me-1'></i> " . $_SESSION['nome'];
-            echo "</button>";
-            echo "<ul class='dropdown-menu dropdown-menu-end' aria-labelledby='userDropdown'>";
-            echo "<li><a class='dropdown-item' href='buscaVagas.php'>Perfil do usuário</a></li>";
-            echo "<li><hr class='dropdown-divider'></li>";
-            echo "<li><a class='dropdown-item' href='sair.php'>Sair</a></li>";
-            echo "</ul>";
-            echo "</div>";
-          } else {
-            echo "<button type='button' class='btn btn-outline-dark' data-bs-toggle='modal' data-bs-target='#loginModal'>";
-            echo "<i class='bi bi-person me-1'></i> Acessar";
-            echo "</button>";
-          }
-          ?>
-        </form>
-      </div>
-
-    </div>
-  </nav>
-
-  <header class="bg-dark py-1">
-    <div class="container px-4 px-lg-5 my-5">
-      <div class="text-center text-white">
-        <h1>Encontre o espaço perfeito para seu veículo</h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      </div>
-
-    </div>
-  </header>
-
-
-  <div class="container px-4 px-lg-5 mt-5">
-
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-6">
-          <div class="mb-3">
-            <form method="GET" action="">
-              <label for="cidade" class="form-label">Digite o nome da sua cidade</label>
-              <div class="input-group">
-                <input type="text" class="form-control mb-2" id="cidade" name="filter[cidade]"
-                  autocomplete="off" value="<?= $filtro_cidade ?? '' ?>">
-
-                <button class="btn btn-primary mb-2" type="submit">Filtrar</button>
-                <a href="index.php" class="btn btn-outline-secondary mb-2">Limpar</a>
-              </div>
-            </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </div>
-        </div>
-      </div>
-
-
-
-
-
-
-
-    </div>
-
-
-      <!-- Cards das vagas -->
-    <section class="py-5">
-      <h2 class="fw-bolder mb-4">Vagas Disponíveis</h2>
-      <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
-        <?php
-        $sql_pesquisa = "SELECT * FROM `vagas` " . $where;
-        $result = mysqli_query($conexao, $sql_pesquisa);
-        while ($linha = mysqli_fetch_assoc($result)) {
-        ?>
-
-          <div class="col mb-5">
-            <div class="card h-100">
-              <?php
-              $caminhoImagem = !empty($linha['foto_vaga']) ? $linha['foto_vaga'] : 'assets/img/sem-imagem.jpg'; ?>
-              <img class="card-img-top" src="<?= htmlspecialchars($caminhoImagem) ?>" alt="Imagem da vaga" style="height: 300px; object-fit: cover;" />
-
-
-
-              <div class="card-body p-4">
-                <div class="text-center">
-                  <h5 class="fw-bolder"><?php echo $linha['descricao'] ?></h5>
-                  <div class="d-flex justify-content-center small text-warning mb-2">
-                    <?php
-
-                    for ($i = 0; $i < 5; $i++) {
-                      echo '<div class="bi-star-fill"></div>';
-                    }
-                    ?>
-                  </div>
-                  <span>R$<?php echo number_format($linha['preco'], 2, ',', '.') ?> por dia</span>
-                  <br>
-                  <small class="text-muted"><?php echo $linha['cidade'] ?>, <?php echo $linha['bairro'] ?></small>
+<?php
+$pageTitle = 'Espaço Livre – Encontre o Estacionamento Ideal';
+require_once 'components/head.php';   // <head> com CSS/meta/ …
+?>
+
+<body class="index-page">
+    <!-- Navbar / Header -->
+    <?php require_once 'components/header.php'; ?>
+
+    <main class="main">
+
+        <!-- ============ HERO ============ -->
+        <section id="hero" class="hero section">
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+                            <h1 class="mb-4">
+                                Encontre o espaço perfeito para o
+                                <span class="accent-text">seu veículo</span>
+                            </h1>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <!-- <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="reservar_vaga.php?id=<?php echo $linha['id'] ?>">Reservar Vaga</a></div> -->
-              </div>
             </div>
-          </div>
-        <?php } ?>
-        <?php if (mysqli_num_rows($result) > 0) { ?>
-          <div class="col-12 text-center mt-4">
-            <!-- <a href="listagemVagas.php" class="btn btn-outline-secondary">Ver Mais Vagas</a> -->
-          </div>
-        <?php } else { ?>
-          <div class="col-12 text-center mt-4">
-            <p class="lead">Nenhuma vaga disponível no momento.</p>
-          </div>
-        <?php } ?>
-      </div>
+        </section>
+        <!-- /HERO -->
 
+        <!-- ============ VAGAS DISPONÍVEIS ============ -->
+        <section id="features" class="features section">
+            <br><br>
+            <!-- Título da seção -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Vagas Disponíveis</h2><br>
 
-
-
-  </div>
-
-  </section>
-
-
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Espaço Livre 2025</p>
-    </div>
-  </footer>
-
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="loginModalLabel">LOGIN</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="login-usuario-form">
-            <span id="msgAlertErroLogin"></span>
-            <div class="mb-3">
-              <label for="email" class="col-form-label">Digite seu e-mail:</label>
-              <input type="text" name="email" class="form-control" id="email" placeholder="E-mail">
             </div>
-            <div class="mb-3">
-              <label for="senha" class="col-form-label">Digite sua senha:</label>
-              <input type="password" name="senha" class="form-control" id="senha" autocomplete="on" placeholder="Senha">
+
+            <!-- Cards das vagas -->
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4 class="card-title">Filtros</h4>
+                                <hr>
+                                <form method="GET" action="">
+                                    <div class="mb-3">
+                                        <label for="descricao" class="form-label">Descrição</label>
+                                        <input type="text" class="form-control" id="descricao" name="filter[descricao]"
+                                            autocomplete="off" value="<?= $filtro_descricao ?>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="cidade" class="form-label">Cidade</label>
+                                        <input type="text" class="form-control" id="cidade" name="filter[cidade]"
+                                            autocomplete="off" value="<?= $filtro_cidade ?? '' ?>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bairro" class="form-label">Bairro</label>
+                                        <input type="text" class="form-control" id="bairro" name="filter[bairro]"
+                                            autocomplete="off" value="<?= $filtro_bairro ?? '' ?>">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Preço (R$)</label> <div class="price-inputs">
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text">Min</span>
+                                                        <input type="number" class="form-control min-price-input" 
+                                                               name="filter[preco_min]" 
+                                                               placeholder="Mínimo" 
+                                                               min="0" 
+                                                               max="10000" 
+                                                               value="<?= $display_preco_min ?>" 
+                                                               step="1">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text">Max</span>
+                                                        <input type="number" class="form-control max-price-input" 
+                                                               name="filter[preco_max]" 
+                                                               placeholder="Máximo" 
+                                                               min="0" 
+                                                               max="10000"
+                                                               value="<?= $display_preco_max ?>" 
+                                                               step="1">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="filter-actions mt-3">
+                                        <button class="btn btn-primary mb-3" type="submit">Filtrar</button>
+                                        <a href="buscaVagas.php" class="btn btn-outline-secondary mb-3">Limpar filtros</a>
+                                    </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
+                        <?php
+                        $sql_pesquisa = "SELECT * FROM `vagas` " . $where;
+                        $result = mysqli_query($conexao, $sql_pesquisa);
+                        while ($linha = mysqli_fetch_assoc($result)) {
+                        ?>
+                            <div class="col mb-5">
+                                <div class="card h-100">
+                                    <div class="badge bg-dark text-white position-absolute"
+                                        style="top: 0.5rem; right: 0.5rem">
+                                        Vaga - Código <?php echo $linha['id'] ?>
+                                    </div>
+                                    <?php
+
+                                    $caminhoImagem = !empty($linha['foto_vaga']) ? $linha['foto_vaga'] : 'assets/img/sem-imagem.jpg'; ?>
+                                    <img class="card-img-top" src="<?= htmlspecialchars($caminhoImagem) ?>" alt="Imagem da vaga" style="height: 300px; object-fit: cover;" />
+
+
+
+                                    <div class="card-body p-4">
+                                        <div class="text-center">
+                                            <h5 class="fw-bolder"><?php echo $linha['descricao'] ?></h5>
+                                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                            </div>
+                                            Diária R$<?php echo $linha['preco'] ?><br>
+                                            <?php echo $linha['cidade'] ?><br>
+                                            <?php echo $linha['bairro'] ?><br>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                        <div class="text-center">
+                                            <a href="cadastrarReserva.php?id=<?php echo $linha['id']; ?>" class="btn btn-outline-dark mt-auto">Reservar Vaga</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          <button type="button" class="btn btn-primary" id="btnLogin">Acessar</button>
-          <p class="mt-2"><a href="cadastrarUsuario.php">Criar uma conta</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
+            </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/custom.js"></script>
-  <script>
-    // Seu script custom.js pode conter a lógica para o login via AJAX
-    document.addEventListener('DOMContentLoaded', function() {
-      const btnLogin = document.getElementById('btnLogin');
-      const loginForm = document.getElementById('login-usuario-form');
-      const msgAlertErroLogin = document.getElementById('msgAlertErroLogin');
+    </main>
 
-      if (btnLogin && loginForm && msgAlertErroLogin) {
-        btnLogin.addEventListener('click', async (e) => {
-          e.preventDefault();
+    <?php require_once 'components/footer.php'; ?>
 
-          const dadosForm = new FormData(loginForm);
+    <!-- Botão scroll-top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+        <i class="bi bi-arrow-up-short"></i>
+    </a>
 
-          const response = await fetch("validar_login.php", { // Crie este arquivo para validar o login
-            method: "POST",
-            body: dadosForm,
-          });
+    <!-- Vendor JS -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
 
-          const data = await response.json();
-
-          if (data.erro) {
-            msgAlertErroLogin.innerHTML = `<div class="alert alert-danger">${data.msg}</div>`;
-          } else {
-            // Login bem-sucedido, redirecionar ou atualizar a página
-            window.location.href = "index.php"; // Redireciona para a página inicial
-          }
-        });
-      }
-    });
-  </script>
-
-
-
-
-
+    <!-- Custom JS -->
+    <script src="assets/js/home.js"></script>
+    <script src="assets/js/login.js"></script>
+    <script src="assets/js/custom.js"></script>
 </body>
 
 </html>

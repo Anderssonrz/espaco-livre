@@ -18,9 +18,8 @@
           <li><a href="cadastrarVaga.php">Cadastrar Vagas</a></li>
           <li><a href="buscaVagas.php">Reservar Vagas</a></li>
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event)">
-              <!-- <?php echo htmlspecialchars($_SESSION['nome']); ?> <i class="bi bi-caret-down-fill"></i> -->
-               👤<?php echo htmlspecialchars($_SESSION['nome']); ?> 
+            <a href="#" class="bi bi-person" onclick="toggleDropdown(event)">
+              <?php echo htmlspecialchars($_SESSION['nome'])?> 
             </a>
             <ul class="dropdown-content">
               <li><a href="dadosPessoaisUsuario.php"><i class="bi bi-person-circle me-2"></i>Meu Perfil</a></li>
