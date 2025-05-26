@@ -6,12 +6,12 @@ $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 
 if (empty($id)) {
     $_SESSION['msg'] = "<p style='color:red;'>ID da vaga inválido!</p>";
-    header("Location: listagemVagas.php");
+    header("Location: listaVagas.php");
     exit();
 }
 
 //$descricao = filter_input(INPUT_POST, 'descricao', FILTER_UNSAFE_RAW); 
-$descricao = htmlspecialchars($_POST['descricao'], ENT_QUOTES | ENT_HTML401 | ENT_IGNORE);
+$descricao = filter_input(INPUT_POST,'descricao', FILTER_UNSAFE_RAW);
 $cidade = filter_input(INPUT_POST, 'cidade', FILTER_UNSAFE_RAW);    
 $bairro = filter_input(INPUT_POST, 'bairro', FILTER_UNSAFE_RAW);    
 $endereco = filter_input(INPUT_POST, 'endereco', FILTER_UNSAFE_RAW);  
@@ -63,7 +63,7 @@ mysqli_stmt_bind_param($stmt, "sssssssdiii", $descricao, $cidade, $bairro, $ende
 
 if (mysqli_stmt_execute($stmt)) {
     $_SESSION['msg'] = "<p style='color:green;'>Vaga editada com sucesso!</p>";
-    header("Location: listagemVagas.php");
+    header("Location: listaVagas.php");
 } else {
     $_SESSION['msg'] = "<p style='color:red;'>Erro ao editar a vaga!</p>";
     error_log("\n Erro ao editar vaga: " . mysqli_error($conexao), 3, "error.log");
