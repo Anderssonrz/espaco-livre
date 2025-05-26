@@ -26,8 +26,6 @@ Os Requisitos Não Funcionais da plataforma ESPAÇO LIVRE são as seguintes:
 [RN02] O sistema deve diferenciar claramente uma vaga que esteja livre ou ocupada.
 
 
-C. Diagrama de Caso de Uso 
-
 ----------------------------------------segue abaixo:
 
 tela cadastro - colocar mascara cpf, telefone.
