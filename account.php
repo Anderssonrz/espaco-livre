@@ -77,18 +77,19 @@ require_once 'components/head.php';
 <body class="account-page">
   <?php require_once 'components/header.php'; ?>
 
+
   <main class="main">
-    <div class="page-title light-background">
-      <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">Minha Conta</h1>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="index.php">Home</a></li>
-            <li class="current">Minha Conta</li>
-          </ol>
-        </nav>
+    <section id="hero-minha-conta" class="hero section" style="padding-top: 80px; padding-bottom: 20px;">
+      <div class="container" data-aos="fade-up">
+        <div class="row align-items-center justify-content-center text-center">
+          <div class="col-lg-8">
+            <div class="hero-content">
+              <h1 class="mb-2">Minha <span class="accent-text">Conta</span></h1>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
     <section id="account" class="account section">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -265,7 +266,7 @@ require_once 'components/head.php';
                                   <i class="bi bi-x-circle me-1"></i>Cancelar Reserva
                                 </a>
                               <?php endif; ?>
-                              {/* <a href="editar_reserva.php?id_reserva=<?= $reserva['id_reserva'] ?>" class="btn btn-sm btn-outline-primary disabled ms-2" aria-disabled="true">Editar Reserva (Em breve)</a> */}
+                               <!-- <a href="editar_reserva.php?id_reserva=<?= $reserva['id_reserva'] ?>" class="btn btn-sm btn-outline-primary disabled ms-2" aria-disabled="true">Editar Reserva (Em breve)</a> -->
                             </div>
                           </div>
                         <?php endforeach; ?>

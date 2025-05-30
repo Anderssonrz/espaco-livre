@@ -152,14 +152,15 @@
 
     <body>
         <?php require_once 'components/header.php'; ?>
-
         <main class="main">
-            <section id="hero-reserva" class="hero section" style="padding-top: 80px; padding-bottom: 20px;">
+            <section id="hero-minha-conta" class="hero section" style="padding-top: 80px; padding-bottom: 20px;">
                 <div class="container" data-aos="fade-up">
                     <div class="row align-items-center justify-content-center text-center">
-                        <div class="col-lg-10">
-                            <h1>Confirmar Reserva</h1>
-                            <p class="lead">Você está prestes a reservar a vaga: <strong><?= htmlspecialchars($linha_vaga['descricao'] ?? 'Não especificada') ?></strong></p>
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="mb-2">Confirmar <span class="accent-text">Reserva</span></h1>
+                                <p class="lead">Você está prestes a reservar a vaga: <strong><?= htmlspecialchars($linha_vaga['descricao'] ?? 'Não especificada') ?></strong></p>
+                            </div>
                         </div>
                     </div>
                 </div>
