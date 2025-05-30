@@ -88,12 +88,14 @@ if (isset($_POST['btnRetornar'])) {
                                 <table class="table table-striped table-bordered w-100 table-expanded">
                                     <thead>
                                         <tr>
-                                            <th scope="col">ID</th>
+                                            <th scope="col">Código</th>
                                             <th scope="col">Descrição</th>
+                                            <th scope="col">UF</th>
                                             <th scope="col">Cidade</th>
                                             <th scope="col">Bairro</th>
                                             <th scope="col">Rua</th>
                                             <th scope="col">N.º</th>
+                                            <!-- <th scope="col">Complemento</th> -->
                                             <th scope="col">Preço</th>
                                             <th scope="col">Data cadastro</th>
                                             <th scope="col"></th>
@@ -126,10 +128,12 @@ if (isset($_POST['btnRetornar'])) {
             echo "<tr>";
             echo "<td>" . $linha['id'] . "</td>";
             echo "<td>" . $linha['descricao'] . "</td>";
+            echo "<td>" . $linha['id_uf'] . "</td>";
             echo "<td>" . $linha['cidade'] . "</td>";
             echo "<td>" . $linha['bairro'] . "</td>";
-            echo "<td>" . $linha['logradouro'] . "</td>";
+            echo "<td>" . $linha['endereco'] . "</td>";
             echo "<td>" . $linha['numero'] . "</td>";
+            // echo "<td>" . $linha['complemento'] . "</td>";
             echo "<td>" . $linha['preco'] . "</td>";
             echo "<td>" . $linha['dataCadastro'] . "</td>";
             echo "<td>

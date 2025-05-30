@@ -3,8 +3,8 @@
   <div class="container footer-top">
     <div class="row gy-4">
       <div class="col-lg-4 col-md-6 footer-about">
-        <a href="index.html" class="logo d-flex align-items-center">
-          <span class="sitename">iLanding</span>
+        <a href="index.php" class="logo d-flex align-items-center">
+          <span class="sitename">Espaço Livre</span>
         </a>
         <div class="footer-contact pt-3">
           <p>A108 Adam Street</p>
@@ -90,10 +90,18 @@
   <script src="assets/js/home.js"></script>
   <script src="assets/js/login.js"></script>
   <script src="assets/js/custom.js"></script>
+  <script src="assets/js/filtro.js"></script>
+  <script src="assets/js/cep.js"></script>
+  <script src="assets/js/scripts.js"></script>
+  <script src="assets/js/edit.js"></script>
+
 
   <!-- Maskara do cadatro -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/scripts.js"></script>
+
 </footer>

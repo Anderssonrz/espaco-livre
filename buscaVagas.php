@@ -109,30 +109,31 @@ require_once 'components/head.php';   // <head> com CSS/meta/ …
                                             autocomplete="off" value="<?= $filtro_bairro ?? '' ?>">
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Preço (R$)</label> <div class="price-inputs">
+                                        <label class="form-label">Preço (R$)</label>
+                                        <div class="price-inputs">
                                             <div class="row g-2">
                                                 <div class="col-6">
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text">Min</span>
-                                                        <input type="number" class="form-control min-price-input" 
-                                                               name="filter[preco_min]" 
-                                                               placeholder="Mínimo" 
-                                                               min="0" 
-                                                               max="10000" 
-                                                               value="<?= $display_preco_min ?>" 
-                                                               step="1">
+                                                        <input type="number" class="form-control min-price-input"
+                                                            name="filter[preco_min]"
+                                                            placeholder="Mínimo"
+                                                            min="0"
+                                                            max="10000"
+                                                            value="<?= $display_preco_min ?>"
+                                                            step="1">
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text">Max</span>
-                                                        <input type="number" class="form-control max-price-input" 
-                                                               name="filter[preco_max]" 
-                                                               placeholder="Máximo" 
-                                                               min="0" 
-                                                               max="10000"
-                                                               value="<?= $display_preco_max ?>" 
-                                                               step="1">
+                                                        <input type="number" class="form-control max-price-input"
+                                                            name="filter[preco_max]"
+                                                            placeholder="Máximo"
+                                                            min="0"
+                                                            max="10000"
+                                                            value="<?= $display_preco_max ?>"
+                                                            step="1">
                                                     </div>
                                                 </div>
                                             </div>
@@ -140,12 +141,14 @@ require_once 'components/head.php';   // <head> com CSS/meta/ …
                                     </div>
                                     <div class="filter-actions mt-3">
                                         <button type="submit" class="btn btn-primary mb-3">Filtrar</button>
-                                        <button type="reset" class="btn btn-outline-secondary mb-3">Limpar</a>
+                                        <a href="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="btn btn-outline-secondary mb-3">Limpar</a>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
+
+                    
                     <div class="col-md-9">
                         <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 justify-content-center">
                             <?php

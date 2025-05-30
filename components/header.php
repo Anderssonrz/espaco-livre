@@ -22,9 +22,9 @@
               <?php echo htmlspecialchars($_SESSION['nome'])?> 
             </a>
             <ul class="dropdown-content">
-              <li><a href="dadosPessoaisUsuario.php"><i class="bi bi-person-circle me-2"></i>Meu Perfil</a></li>
-              <li><a href="dadosVagaUsuario.php"><i class="bi bi-heart me-2"></i> Minhas Reservas</a></li>
-              <li><a href="vagasCadastradas.php"><i class="bi bi-gear me-2"></i> Vagas Cadastradas</a></li>
+              <li><a href="account.php#tab-perfil.php#"><i class="bi bi-person-circle me-2"></i>Meu Perfil</a></li>
+              <li><a href="account.php#tab-reservas.php"><i class="bi bi-calendar2-check me-2"></i> Minhas Reservas</a></li>
+              <li><a href="account.php#tab-vagas.php"><i class="bi bi-car-front-fill me-2"></i> Minhas Vagas</a></li>
               <li><a href="sair.php"><i class="bi bi-box-arrow-right me-2"></i> Sair</a></li>
             </ul>
           </li>

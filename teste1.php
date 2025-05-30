@@ -1,250 +1,285 @@
 <?php
-//------------------------------------------------------------------------------------------
-require_once("conexao.php"); // Assume que $conexao (MySQLi) é definido aqui
 session_start();
+include_once 'conexao.php'; // Garanta que $conn (PDO) seja inicializado aqui
 
-$feedback_messages = []; // Array para armazenar mensagens de feedback
-
-// Processa o formulário se foi enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnCadastrar'])) {
-    // Coleta de dados (com sanitização básica e trim)
-    $descricao = trim($_POST['descricao'] ?? '');
-    $cidade = trim($_POST['cidade'] ?? '');
-    $bairro = trim($_POST['bairro'] ?? ''); // Corrigido no formulário para vir como 'bairro'
-    $endereco = trim($_POST['endereco'] ?? '');
-    $numero = trim($_POST['numero'] ?? ''); // Pode ser string para casos como "S/N"
-    $complemento = trim($_POST['complemento'] ?? '');
-    // Para preço, é melhor tratar como string e validar/converter no PHP, especialmente se usar máscaras
-    $preco_str = trim($_POST['preco'] ?? '');
-    $id_uf = filter_input(INPUT_POST, 'id_uf', FILTER_SANITIZE_NUMBER_INT);
-
-    // Validações básicas do servidor
-    if (empty($descricao)) $feedback_messages[] = ['type' => 'danger', 'message' => 'O título da vaga é obrigatório.'];
-    if (empty($id_uf)) $feedback_messages[] = ['type' => 'danger', 'message' => 'O estado é obrigatório.'];
-    if (empty($cidade)) $feedback_messages[] = ['type' => 'danger', 'message' => 'A cidade é obrigatória.'];
-    if (empty($bairro)) $feedback_messages[] = ['type' => 'danger', 'message' => 'O bairro é obrigatório.'];
-    if (empty($endereco)) $feedback_messages[] = ['type' => 'danger', 'message' => 'O endereço é obrigatório.'];
-    if (empty($numero)) $feedback_messages[] = ['type' => 'danger', 'message' => 'O número é obrigatório.'];
-    if (empty($preco_str)) {
-        $feedback_messages[] = ['type' => 'danger', 'message' => 'O valor da diária é obrigatório.'];
-    } else {
-        // Converte o preço para um formato float (ex: "25,00" para 25.00)
-        $preco = str_replace('.', '', $preco_str); // Remove separador de milhar se houver
-        $preco = str_replace(',', '.', $preco);    // Substitui vírgula por ponto
-        if (!is_numeric($preco) || $preco < 0) {
-            $feedback_messages[] = ['type' => 'danger', 'message' => 'O valor da diária é inválido.'];
-        }
-    }
-
-    // Validação do ID do usuário (deve ser o logado)
-    if (!isset($_SESSION['id'])) {
-        $feedback_messages[] = ['type' => 'danger', 'message' => 'Erro: Você precisa estar logado para cadastrar uma vaga.'];
-    }
-    $id_usuario_seguro = $_SESSION['id'] ?? null;
-
-
-    // Processamento do upload da foto (apenas se não houver erros de validação até agora)
-    $foto_vaga_db_path = "";
-    if (empty(array_filter($feedback_messages, fn($msg) => $msg['type'] == 'danger'))) {
-        if (isset($_FILES["foto_vaga"]) && $_FILES["foto_vaga"]["error"] == UPLOAD_ERR_OK) {
-            $pasta_destino = "assets/img/vagas/"; // Crie esta pasta se não existir
-            if (!is_dir($pasta_destino)) {
-                if (!mkdir($pasta_destino, 0775, true)) { // Tenta criar a pasta recursivamente
-                     $feedback_messages[] = ['type' => 'danger', 'message' => 'Erro crítico: Não foi possível criar a pasta de destino para fotos.'];
-                }
-            }
-
-            if (is_writable($pasta_destino)) {
-                $nome_arquivo_original = basename($_FILES["foto_vaga"]["name"]);
-                $extensao = strtolower(pathinfo($nome_arquivo_original, PATHINFO_EXTENSION));
-                $nome_arquivo_unico = uniqid('vaga_', true) . "." . $extensao;
-                $caminho_completo = $pasta_destino . $nome_arquivo_unico;
-
-                $permitidos = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                $tamanho_maximo_bytes = 5 * 1024 * 1024; // 5MB
-
-                if (in_array($extensao, $permitidos)) {
-                    if ($_FILES["foto_vaga"]["size"] <= $tamanho_maximo_bytes) {
-                        if (move_uploaded_file($_FILES["foto_vaga"]["tmp_name"], $caminho_completo)) {
-                            $foto_vaga_db_path = $caminho_completo;
-                        } else {
-                            $feedback_messages[] = ['type' => 'danger', 'message' => 'Erro ao salvar a foto da vaga. Código do erro: ' . $_FILES["foto_vaga"]["error"]];
-                        }
-                    } else {
-                        $feedback_messages[] = ['type' => 'danger', 'message' => 'A foto é muito grande (limite de 5MB).'];
-                    }
-                } else {
-                    $feedback_messages[] = ['type' => 'danger', 'message' => 'Tipo de arquivo da foto não permitido.'];
-                }
-            } else {
-                 $feedback_messages[] = ['type' => 'danger', 'message' => 'Erro crítico: A pasta de destino para fotos não tem permissão de escrita.'];
-            }
-
-        } elseif (!isset($_FILES["foto_vaga"]) || $_FILES["foto_vaga"]["error"] == UPLOAD_ERR_NO_FILE) {
-            $feedback_messages[] = ['type' => 'danger', 'message' => 'A imagem da vaga é obrigatória.'];
-        } elseif ($_FILES["foto_vaga"]["error"] != UPLOAD_ERR_OK) {
-            $feedback_messages[] = ['type' => 'danger', 'message' => 'Ocorreu um erro no upload da foto. Código: ' . $_FILES["foto_vaga"]["error"]];
-        }
-    }
-
-
-    // Inserir no banco de dados apenas se não houver mensagens de erro do tipo 'danger'
-    $erros_presentes = false;
-    foreach ($feedback_messages as $msg) {
-        if ($msg['type'] === 'danger') {
-            $erros_presentes = true;
-            break;
-        }
-    }
-
-    if (!$erros_presentes) {
-        $sql = "INSERT INTO vagas (descricao, cidade, bairro, endereco, numero, complemento, foto_vaga, preco, id_usuario, id_uf)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_prepare($conexao, $sql);
-        // Tipos: s (string), i (integer), d (double)
-        mysqli_stmt_bind_param($stmt, "sssssssdii", $descricao, $cidade, $bairro, $endereco, $numero, $complemento, $foto_vaga_db_path, $preco, $id_usuario_seguro, $id_uf);
-
-        if (mysqli_stmt_execute($stmt)) {
-            $_SESSION['feedback_redirect'] = ['type' => 'success', 'message' => 'Vaga cadastrada com sucesso!'];
-            header("Location: " . $_SERVER["PHP_SELF"]); // Redireciona para limpar o POST e exibir msg de sessão
-            exit;
-        } else {
-            $feedback_messages[] = ['type' => 'danger', 'message' => 'Erro ao cadastrar a vaga: ' . mysqli_error($conexao)];
-            error_log("Erro MySQL ao inserir vaga (usuário: {$id_usuario_seguro}): " . mysqli_error($conexao));
-        }
-        mysqli_stmt_close($stmt);
-    }
+// Exibe feedback da sessão (ex: após atualização do perfil)
+if (isset($_SESSION['feedback'])) {
+    // Adicionado container para melhor posicionamento e classe de alerta específica
+    $feedback_type = htmlspecialchars($_SESSION['feedback']['type']);
+    $feedback_message = htmlspecialchars($_SESSION['feedback']['message']);
+    // A mensagem será ecoada dentro do <main> para melhor posicionamento
+    // unset($_SESSION['feedback']); // Será feito após o echo
 }
 
-// Se houve redirecionamento com feedback na sessão
-if (isset($_SESSION['feedback_redirect'])) {
-    $feedback_messages[] = $_SESSION['feedback_redirect'];
-    unset($_SESSION['feedback_redirect']);
+// Verifica se o usuário está logado
+if (!isset($_SESSION['id'])) {
+    $_SESSION['feedback_redirect'] = ['type' => 'warning', 'message' => 'Você precisa estar logado para acessar sua conta.'];
+    header("Location: login.php");
+    exit();
 }
 
+$id_usuario = $_SESSION['id'];
+$usuario = null;
+$minhas_reservas = [];
+$minhas_vagas_cadastradas = [];
+
+try {
+    // 1. Buscar dados do perfil do usuário
+    $stmt_usuario = $conn->prepare("SELECT id, nome, cpf, telefone, email FROM usuarios WHERE id = ?");
+    $stmt_usuario->execute([$id_usuario]);
+    $usuario = $stmt_usuario->fetch(PDO::FETCH_ASSOC);
+
+    if (!$usuario) {
+        session_destroy(); // Usuário da sessão não encontrado no DB
+        $_SESSION['feedback_redirect'] = ['type' => 'danger', 'message' => 'Erro ao carregar dados do usuário. Faça login novamente.'];
+        header("Location: login.php");
+        exit();
+    }
+
+    // 2. Buscar "Minhas Reservas"
+    // (Incluindo descrição da vaga e UF da reserva)
+    $stmt_reservas = $conn->prepare(
+        "SELECT r.*, v.descricao AS vaga_descricao, v.foto_vaga, e.uf AS reserva_estado_uf
+         FROM reservas r
+         JOIN vagas v ON r.id_vaga = v.id
+         LEFT JOIN estados e ON r.id_uf = e.id -- A reserva tem seu próprio id_uf
+         WHERE r.id_usuario = ?
+         ORDER BY r.data_reserva DESC, r.id_reserva DESC"
+    );
+    $stmt_reservas->execute([$id_usuario]);
+    $minhas_reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
+
+    // 3. Buscar "Minhas Vagas Cadastradas"
+    // (Incluindo UF da vaga)
+    $stmt_vagas = $conn->prepare(
+        "SELECT v.*, e.uf AS estado_uf_vaga
+         FROM vagas v
+         JOIN estados e ON v.id_uf = e.id
+         WHERE v.id_usuario = ?
+         ORDER BY v.dataCadastro DESC, v.id DESC"
+    );
+    $stmt_vagas->execute([$id_usuario]);
+    $minhas_vagas_cadastradas = $stmt_vagas->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Erro na página Minha Conta (usuário ID: $id_usuario): " . $e->getMessage());
+    // Definir uma mensagem de erro para ser exibida no HTML
+    $erro_fatal_carregamento = "Ocorreu um erro ao carregar os dados da sua conta. Por favor, tente novamente mais tarde.";
+    // Não usar die() diretamente se o HTML abaixo ainda precisa ser renderizado para mostrar o erro
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <?php
-$pageTitle = 'Cadastrar Nova Vaga – Espaço Livre';
-require_once 'components/head.php'; // Seu <head> com CSS, meta tags, etc.
+$pageTitle = 'Minha Conta – Espaço Livre';
+require_once 'components/head.php';
 ?>
-<body>
+
+<body class="account-page">
     <?php require_once 'components/header.php'; ?>
 
     <main class="main">
-        <section id="hero-cadastro-vaga" class="hero section" style="padding-top: 80px; padding-bottom: 20px;">
-            <div class="container" data-aos="fade-up">
-                <div class="row align-items-center justify-content-center text-center">
-                    <div class="col-lg-8">
-                        <div class="hero-content">
-                            <h1 class="mb-2">Cadastrar <span class="accent-text">Nova Vaga</span></h1>
-                        </div>
-                    </div>
-                </div>
+        <div class="page-title light-background">
+            <div class="container d-lg-flex justify-content-between align-items-center">
+                <h1 class="mb-2 mb-lg-0">Minha Conta</h1>
+                <nav class="breadcrumbs">
+                    <ol>
+                        <li><a href="index.php">Home</a></li>
+                        <li class="current">Minha Conta</li>
+                    </ol>
+                </nav>
             </div>
-        </section>
+        </div>
 
-        <section id="form-cadastro-vaga" class="checkout section pt-0">
+        <section id="account" class="account section">
             <div class="container" data-aos="fade-up" data-aos-delay="100">
                 <?php
-                if (!empty($feedback_messages)) {
-                    echo '<div class="row justify-content-center mb-3"><div class="col-md-8">';
-                    foreach ($feedback_messages as $msg) {
-                        echo '<div class="alert alert-' . htmlspecialchars($msg['type']) . ' alert-dismissible fade show" role="alert">';
-                        echo htmlspecialchars($msg['message']);
-                        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                        echo '</div>';
-                    }
+                // Exibir feedback da sessão AQUI, dentro do container principal da seção
+                if (isset($feedback_message)) { // Variável definida no bloco PHP do topo
+                    echo '<div class="row justify-content-center mb-3"><div class="col-md-10 col-lg-9">';
+                    echo '<div class="alert alert-' . $feedback_type . ' alert-dismissible fade show" role="alert">';
+                    echo $feedback_message;
+                    echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                    echo '</div></div></div>';
+                    if (isset($_SESSION['feedback'])) unset($_SESSION['feedback']); // Limpa após exibir
+                }
+                // Exibir erro fatal de carregamento, se houver
+                if (isset($erro_fatal_carregamento)) {
+                    echo '<div class="row justify-content-center mb-3"><div class="col-md-10 col-lg-9">';
+                    echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($erro_fatal_carregamento) . '</div>';
                     echo '</div></div>';
                 }
                 ?>
 
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 col-md-10">
-                        <div class="checkout-container">
-                            <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" class="checkout-form needs-validation" novalidate>
-                                <div class="checkout-section" id="vaga-info">
-                                    <div class="section-header mb-4">
-                                        <div class="section-number d-none d-md-flex align-items-center justify-content-center">!</div>
-                                        <h3>Informações da Vaga</h3>
+                <div class="mobile-menu d-lg-none mb-4">
+                    <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu" aria-expanded="false" aria-controls="profileMenu">
+                        <i class="bi bi-list"></i>
+                        <span>Menu da Conta</span>
+                    </button>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-3">
+                        <div class="profile-menu collapse d-lg-block" id="profileMenu">
+                            <?php if ($usuario): ?>
+                                <div class="user-info mb-4 text-center text-lg-start" data-aos="fade-right">
+                                    <div class="user-avatar mx-auto ms-lg-0 mb-2" style="width: 80px; height: 80px; background-color: #e9ecef; border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                                        <i class="bi bi-person-fill" style="font-size: 2.5rem; color: #6c757d;"></i>
                                     </div>
-                                    <div class="section-content">
-                                        <div class="row g-3">
-                                            <div class="col-12">
-                                                <label for="descricao" class="form-label">Título da Vaga <span class="text-danger">*</span></label>
-                                                <input type="text" name="descricao" class="form-control" id="descricao" placeholder="Ex: Vaga coberta em condomínio seguro" required value="<?= htmlspecialchars($_POST['descricao'] ?? '') ?>">
-                                                <div class="invalid-feedback">Por favor, insira um título para a vaga.</div>
-                                            </div>
+                                    <h4><?= htmlspecialchars($usuario['nome'] ?? 'Usuário') ?></h4>
+                                </div>
+                            <?php endif; ?>
 
-                                            <div class="col-md-4">
-                                                <label for="id_uf" class="form-label">Estado <span class="text-danger">*</span></label>
-                                                <select name="id_uf" id="id_uf" class="form-select" required>
-                                                    <option value="">Selecione o Estado</option>
-                                                    <?php
-                                                    $query_estados = $conexao->query("SELECT id, nome, uf FROM estados ORDER BY nome ASC");
-                                                    while ($option_estado = $query_estados->fetch_assoc()) {
-                                                        $selected = (isset($_POST['id_uf']) && $_POST['id_uf'] == $option_estado['id']) ? 'selected' : '';
-                                                        echo "<option value=\"{$option_estado['id']}\" $selected>{$option_estado['uf']} - {$option_estado['nome']}</option>";
-                                                    }
-                                                    ?>
-                                                </select>
-                                                <div class="invalid-feedback">Por favor, selecione um estado.</div>
-                                            </div>
+                            <nav class="menu-nav">
+                                <ul class="nav flex-column nav-pills" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="perfil-tab" data-bs-toggle="tab" href="#tab-perfil" role="tab" aria-controls="tab-perfil" aria-selected="true">
+                                            <i class="bi bi-person-circle me-2"></i>
+                                            <span>Meu Perfil</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="reservas-tab" data-bs-toggle="tab" href="#tab-reservas" role="tab" aria-controls="tab-reservas" aria-selected="false">
+                                            <i class="bi bi-calendar2-check me-2"></i>
+                                            <span>Minhas Reservas</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="vagas-tab" data-bs-toggle="tab" href="#tab-vagas" role="tab" aria-controls="tab-vagas" aria-selected="false">
+                                            <i class="bi bi-car-front-fill me-2"></i>
+                                            <span>Minhas Vagas</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="menu-footer mt-4 pt-3 border-top">
+                                    <a href="sair.php" class="btn btn-outline-danger w-100">
+                                        <i class="bi bi-box-arrow-right me-2"></i>
+                                        <span>Sair</span>
+                                    </a>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
 
-                                            <div class="col-md-4">
-                                                <label for="cidade" class="form-label">Cidade <span class="text-danger">*</span></label>
-                                                <input type="text" name="cidade" class="form-control" id="cidade" placeholder="Ex: Joinville" required value="<?= htmlspecialchars($_POST['cidade'] ?? '') ?>">
-                                                <div class="invalid-feedback">Por favor, insira a cidade.</div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label for="bairro" class="form-label">Bairro <span class="text-danger">*</span></label>
-                                                <input type="text" name="bairro" class="form-control" id="bairro" placeholder="Ex: Centro" required value="<?= htmlspecialchars($_POST['bairro'] ?? '') ?>">
-                                                <div class="invalid-feedback">Por favor, insira o bairro.</div>
-                                            </div>
-
-                                            <div class="col-12">
-                                                <label for="endereco" class="form-label">Endereço (Rua, Av.) <span class="text-danger">*</span></label>
-                                                <input type="text" name="endereco" class="form-control" id="endereco" placeholder="Ex: Rua das Palmeiras" required value="<?= htmlspecialchars($_POST['endereco'] ?? '') ?>">
-                                                <div class="invalid-feedback">Por favor, insira o endereço.</div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <label for="numero" class="form-label">Número <span class="text-danger">*</span></label>
-                                                <input type="text" name="numero" class="form-control" id="numero" placeholder="Ex: 123 ou S/N" required value="<?= htmlspecialchars($_POST['numero'] ?? '') ?>">
-                                                <div class="invalid-feedback">Por favor, insira o número.</div>
-                                            </div>
-
-                                            <div class="col-md-8">
-                                                <label for="complemento" class="form-label">Complemento</label>
-                                                <input type="text" name="complemento" class="form-control" id="complemento" placeholder="Ex: Apto 101, Bloco B, Fundos" value="<?= htmlspecialchars($_POST['complemento'] ?? '') ?>">
-                                            </div>
-                                            
-                                            <div class="col-md-7">
-                                                <label for="foto_vaga" class="form-label">Imagem da Vaga <span class="text-danger">*</span></label>
-                                                <input type="file" class="form-control" name="foto_vaga" id="foto_vaga" accept="image/jpeg, image/png, image/gif, image/webp" required>
-                                                <div class="invalid-feedback">Por favor, selecione uma imagem (JPG, PNG, GIF, WEBP).</div>
-                                                <small class="form-text text-muted">Max: 5MB.</small>
-                                            </div>
-
-                                            <div class="col-md-5">
-                                                <label for="preco" class="form-label">Valor da Diária (R$) <span class="text-danger">*</span></label>
-                                                <input type="text" name="preco" class="form-control" id="preco" placeholder="Ex: 25,00" required value="<?= htmlspecialchars($_POST['preco'] ?? '') ?>">
-                                                <div class="invalid-feedback">Por favor, insira um valor válido (ex: 25,00).</div>
-                                            </div>
-
-                                            <div class="col-12 mt-4">
-                                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                                    <button type="submit" name="btnCadastrar" class="btn btn-primary px-4 btn-lg">Cadastrar Vaga</button>
-                                                    <button type="reset" class="btn btn-outline-secondary px-4 btn-lg">Limpar</button>
-                                                    <a href="index.php" class="btn btn-outline-danger px-4 btn-lg">Cancelar</a>
-                                                </div>
-                                            </div>
+                    <div class="col-lg-9">
+                        <div class="content-area card shadow-sm">
+                            <div class="card-body">
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="tab-perfil" role="tabpanel" aria-labelledby="perfil-tab">
+                                        <div class="settings-section" data-aos="fade-up">
+                                            <h3 class="mb-4">Informações Pessoais</h3>
+                                            <?php if ($usuario): ?>
+                                                <form method="POST" action="editarPerfil.php" class="needs-validation" novalidate>
+                                                    <div class="row g-3">
+                                                        <div class="col-md-6">
+                                                            <label for="nome" class="form-label">Nome Completo</label>
+                                                            <input type="text" class="form-control" id="nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required>
+                                                            <div class="invalid-feedback">Por favor, informe seu nome.</div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="cpf" class="form-label">CPF</label>
+                                                            <input type="text" class="form-control" id="cpf" name="cpf" value="<?= htmlspecialchars($usuario['cpf'] ?? '') ?>" required>
+                                                            <div class="invalid-feedback">Por favor, informe um CPF válido.</div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="telefone" class="form-label">Telefone</label>
+                                                            <input type="tel" class="form-control" id="telefone" name="telefone" value="<?= htmlspecialchars($usuario['telefone'] ?? '') ?>">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="email" class="form-label">Email</label>
+                                                            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
+                                                            <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
+                                                        </div>
+                                                        {/* Adicionar campos de senha se a edição de senha for aqui */}
+                                                    </div>
+                                                    <div class="form-buttons mt-4">
+                                                        <button type="submit" name="btnEditarPerfil" class="btn btn-primary">
+                                                            <i class="bi bi-save me-2"></i>Salvar Alterações
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            <?php else: ?>
+                                                <p>Não foi possível carregar os dados do seu perfil.</p>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
+
+                                    <div class="tab-pane fade" id="tab-reservas" role="tabpanel" aria-labelledby="reservas-tab">
+                                        <h3 class="mb-4">Minhas Reservas</h3>
+                                        <?php if (!empty($minhas_reservas)): ?>
+                                            <div class="list-group">
+                                                <?php foreach ($minhas_reservas as $reserva): ?>
+                                                    <div class="list-group-item list-group-item-action flex-column align-items-start mb-3 shadow-sm">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <h5 class="mb-1 text-primary"><?= htmlspecialchars($reserva['vaga_descricao']) ?></h5>
+                                                            <small class="text-muted">Reserva #<?= htmlspecialchars($reserva['id_reserva']) ?></small>
+                                                        </div>
+                                                        <p class="mb-1">
+                                                            <strong>Endereço da Vaga:</strong> <?= htmlspecialchars($reserva['endereco'] . ', ' . $reserva['numero'] . ($reserva['complemento'] ? ' - ' . $reserva['complemento'] : '')) ?><br>
+                                                            <?= htmlspecialchars($reserva['bairro'] . ', ' . $reserva['cidade'] . ' - ' . $reserva['reserva_estado_uf']) ?><br>
+                                                            <strong>Data da Reserva:</strong> <?= htmlspecialchars(date('d/m/Y', strtotime($reserva['data_reserva']))) ?><br>
+                                                            <strong>Dias:</strong> <?= htmlspecialchars($reserva['quant_dias']) ?> |
+                                                            <strong>Valor Total:</strong> R$ <?= htmlspecialchars(number_format($reserva['valor_reserva'], 2, ',', '.')) ?><br>
+                                                            <strong>Status:</strong>
+                                                            <span class="badge bg-<?= $reserva['status'] == 'r' ? 'success' : ($reserva['status'] == 'c' ? 'danger' : 'secondary') ?>">
+                                                                <?= $reserva['status'] == 'r' ? 'Reservado' : ($reserva['status'] == 'c' ? 'Cancelado' : ucfirst($reserva['status'])) ?>
+                                                            </span>
+                                                        </p>
+                                                        <div class="mt-2">
+                                                            <a href="detalhes_vaga.php?id=<?= $reserva['id_vaga'] ?>" class="btn btn-sm btn-outline-info">Ver Vaga</a>
+                                                            {/* Editar Reserva pode ser complexo. Considerar "Cancelar Reserva" se aplicável */}
+                                                            <a href="editar_reserva.php?id_reserva=<?= $reserva['id_reserva'] ?>" class="btn btn-sm btn-outline-primary disabled" aria-disabled="true">Editar Reserva (Em breve)</a>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <p class="text-muted">Você ainda não possui nenhuma reserva.</p>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="tab-pane fade" id="tab-vagas" role="tabpanel" aria-labelledby="vagas-tab">
+                                        <h3 class="mb-4">Minhas Vagas Cadastradas</h3>
+                                        <div class="mb-3">
+                                            <a href="cadastrarVaga.php" class="btn btn-success">
+                                                <i class="bi bi-plus-circle-fill me-2" ></i>Cadastrar Nova Vaga
+                                            </a>
+                                        </div>
+                                        <?php if (!empty($minhas_vagas_cadastradas)): ?>
+                                            <div class="row row-cols-1 row-cols-md-2 g-4">
+                                                <?php foreach ($minhas_vagas_cadastradas as $vaga_cadastrada): ?>
+                                                    <div class="col">
+                                                        <div class="card h-100 shadow-sm">
+                                                            <?php if (!empty($vaga_cadastrada['foto_vaga'])): ?>
+                                                                <img src="<?= htmlspecialchars($vaga_cadastrada['foto_vaga']) ?>" class="card-img-top" alt="Foto da Vaga" style="height: 200px; object-fit: cover;">
+                                                            <?php else: ?>
+                                                                <div style="height: 200px; background-color: #f0f0f0; display:flex; align-items:center; justify-content:center; color: #6c757d;">Sem Imagem</div>
+                                                            <?php endif; ?>
+                                                            <div class="card-body">
+                                                                <h5 class="card-title text-primary"><?= htmlspecialchars($vaga_cadastrada['descricao']) ?></h5>
+                                                                <p class="card-text small">
+                                                                    <?= htmlspecialchars($vaga_cadastrada['endereco'] . ', ' . $vaga_cadastrada['numero']) ?><br>
+                                                                    <?= htmlspecialchars($vaga_cadastrada['bairro'] . ', ' . $vaga_cadastrada['cidade'] . ' - ' . $vaga_cadastrada['estado_uf_vaga']) ?>
+                                                                </p>
+                                                                <p class="card-text fw-bold">Diária: R$ <?= htmlspecialchars(number_format($vaga_cadastrada['preco'], 2, ',', '.')) ?></p>
+                                                            </div>
+                                                            <div class="card-footer bg-transparent border-top-0">
+                                                                <a href="editar_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-primary w-100">
+                                                                    <i class="bi bi-pencil-square me-1"></i>Editar Vaga
+                                                                </a>
+                                                                {/* Adicionar opção de ver reservas desta vaga, desativar, etc. */}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php else: ?>
+                                            <p class="text-muted">Você ainda não cadastrou nenhuma vaga.</p>
+                                            <p><a href="cadastrar_vaga.php">Clique aqui</a> para cadastrar sua primeira vaga!</p>
+                                        <?php endif; ?>
+                                    </div>
+
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -255,32 +290,56 @@ require_once 'components/head.php'; // Seu <head> com CSS, meta tags, etc.
     <?php require_once 'components/footer.php'; ?>
 
     <script>
-    // Script de validação do Bootstrap
-    (function () {
-      'use strict'
-      var forms = document.querySelectorAll('.needs-validation')
-      Array.prototype.slice.call(forms)
-        .forEach(function (form) {
-          form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-              event.preventDefault()
-              event.stopPropagation()
+        $(document).ready(function() {
+            if (typeof $.fn.mask === 'function') {
+                $('#telefone').mask('(00) 00000-0000');
+                $('#cpf').mask('000.000.000-00', {
+                    reverse: true
+                });
+            } else {
+                console.warn('jQuery Mask não está carregada.');
             }
-            form.classList.add('was-validated')
-          }, false)
-        })
-    })()
 
-    // jQuery Mask (garanta que jQuery e jQuery Mask Plugin estejam carregados)
-    $(document).ready(function() {
-      if (typeof $.fn.mask === 'function') {
-        $('#preco').mask('#.##0,00', { reverse: true, placeholder: "0,00" });
-        // Se tiver outros campos para mascarar, adicione aqui. Ex:
-        // $('#telefone_contato').mask('(00) 00000-0000');
-      } else {
-        console.warn('jQuery Mask Plugin não está carregado.');
-      }
-    });
+            // Ativar a aba correta se houver um hash na URL (ex: ao voltar de uma edição)
+            var hash = window.location.hash;
+            if (hash) {
+                var tabTrigger = new bootstrap.Tab(document.querySelector('a.nav-link[href="' + hash + '"]'));
+                if (tabTrigger._element) { // Verifica se o elemento da aba existe
+                    tabTrigger.show();
+                }
+            }
+
+            // Salvar a aba ativa no localStorage e restaurar ao carregar (opcional, para persistência)
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+                localStorage.setItem('activeAccountTab', $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem('activeAccountTab');
+            if (activeTab && !hash) { // Não sobrescreve se já tiver hash
+                var tabTrigger = new bootstrap.Tab(document.querySelector('a.nav-link[href="' + activeTab + '"]'));
+                if (tabTrigger._element) {
+                    tabTrigger.show();
+                } else { // Se a aba salva não existe mais, remove do localStorage
+                    localStorage.removeItem('activeAccountTab');
+                }
+            }
+        });
+
+        // Script de validação Bootstrap (se não estiver global)
+        (function() {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
     </script>
 </body>
+
 </html>
