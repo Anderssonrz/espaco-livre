@@ -35,7 +35,7 @@ if (!empty($_GET['id'])) {
             $_SESSION['msg'] = "<p style='color:red;'>Erro ao apagar a vaga: " . $conexao->error . "</p>";
         }
     }
-    header("Location: listaVagas.php?"); // Assumindo que você tem uma página de listagem de vagas
+    header("Location: account.php#tab-perfil.php#"); 
 } else {
     $_SESSION['msg'] = "<p style='color:red;'>Erro: ID da vaga não fornecido!</p>";
     header("Location: listagemVagas.php?");

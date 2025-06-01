@@ -302,9 +302,10 @@ require_once 'components/head.php';
                                 <p class="card-text fw-bold">Diária: R$ <?= htmlspecialchars(number_format($vaga_cadastrada['preco'], 2, ',', '.')) ?></p>
                               </div>
                               <div class="card-footer bg-transparent border-top-0">
-                                <a href="editar_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-primary w-100">
+                                <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-primary w-100">
                                   <i class="bi bi-pencil-square me-1"></i>Editar Vaga
-                                </a>
+                                </a><br>
+                                
                                 {/* Adicionar opção de ver reservas desta vaga, desativar, etc. */}
                               </div>
                             </div>

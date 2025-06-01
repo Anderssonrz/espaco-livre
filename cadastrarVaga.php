@@ -97,10 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnCadastrar'])) {
     }
 
     if (!$erros_presentes && $id_usuario_seguro !== null) { // Adicionada verificação para $id_usuario_seguro
-        $sql = "INSERT INTO vagas (descricao, cidade, bairro, endereco, numero, complemento, foto_vaga, preco, id_usuario, id_uf)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO vagas (descricao, cep, cidade, bairro, endereco, numero, complemento, foto_vaga, preco, id_usuario, id_uf)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conexao, $sql);
-        mysqli_stmt_bind_param($stmt, "sssssssdii", $descricao, $cidade, $bairro, $endereco, $numero, $complemento, $foto_vaga_db_path, $preco, $id_usuario_seguro, $id_uf);
+        mysqli_stmt_bind_param($stmt, "ssssssssdii", $descricao, $cep_form, $cidade, $bairro, $endereco, $numero, $complemento, $foto_vaga_db_path, $preco, $id_usuario_seguro, $id_uf);
 
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['feedback_redirect'] = ['type' => 'success', 'message' => 'Vaga cadastrada com sucesso!'];

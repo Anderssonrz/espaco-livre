@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 30/05/2025 às 06:06
+-- Tempo de geração: 01/06/2025 às 23:41
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -20,8 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `pi2`
 --
-CREATE SCHEMA IF NOT EXISTS `pi2` DEFAULT CHARACTER SET utf8;
-USE `pi2`;
+
 -- --------------------------------------------------------
 
 --
@@ -158,7 +157,7 @@ INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `telefone`, `email`, `senha`, `data
 CREATE TABLE `vagas` (
   `id` int(20) NOT NULL,
   `descricao` text NOT NULL,
-  `id_uf` int(20) NOT NULL,
+  `cep` varchar(20) NOT NULL,
   `cidade` varchar(255) NOT NULL,
   `bairro` varchar(255) NOT NULL,
   `endereco` varchar(255) NOT NULL,
@@ -166,6 +165,7 @@ CREATE TABLE `vagas` (
   `complemento` varchar(255) DEFAULT NULL,
   `foto_vaga` varchar(255) NOT NULL,
   `preco` decimal(10,2) NOT NULL,
+  `id_uf` int(20) NOT NULL,
   `id_usuario` int(20) NOT NULL,
   `dataCadastro` date DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -174,11 +174,11 @@ CREATE TABLE `vagas` (
 -- Despejando dados para a tabela `vagas`
 --
 
-INSERT INTO `vagas` (`id`, `descricao`, `id_uf`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `foto_vaga`, `preco`, `id_usuario`, `dataCadastro`) VALUES
-(1, 'Vaga carro.', 24, 'Jaraguá do Sul', 'Centro', 'Seu Madruga', '33', 'Próximo a farmácia BB', './img/67f14671e4f21_foto08.png', 18.50, 1, '2025-05-02'),
-(6, 'Vaga para moto.', 24, 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', './img/67f1311e0987d_vaga05.jpg', 20.00, 3, '2025-05-08'),
-(7, 'Vaga shopping', 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1', 'casa', 'assets/img/vagas/vaga_68391099910a60.63025944.png', 23.00, 11, '2025-05-29'),
-(8, 'Aberta', 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1350', 'casa', 'assets/img/vagas/vaga_683924a8ca1fd0.00058114.jpeg', 23.00, 1, '2025-05-30');
+INSERT INTO `vagas` (`id`, `descricao`, `cep`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `foto_vaga`, `preco`, `id_uf`, `id_usuario`, `dataCadastro`) VALUES
+(6, 'Vaga para moto.', '', 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', './img/67f1311e0987d_vaga05.jpg', 20.00, 24, 3, '2025-05-08'),
+(8, 'Aberta', '', 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1350', 'casa', 'assets/img/vagas/vaga_683924a8ca1fd0.00058114.jpeg', 23.00, 24, 1, '2025-05-30'),
+(9, 'Vaga em prédio residencial.', '', 'Jaraguá do Sul', 'Água Verde', 'Rua Carlos Hardt', '1570', 'Em frente ao Cooper', 'assets/img/vagas/vaga_683cab805e3e12.81594062.jpg', 16.00, 24, 10, '2025-06-01'),
+(13, 'Vaga para carro de passeio.', '89251-100', 'Jaraguá do Sul', 'Centro', 'Rua Presidente Epitácio Pessoa', '44', 'Próximo a farmácia BB', 'assets/img/vagas/vaga_683cc85736aae2.59856803.jpg', 12.00, 24, 10, '2025-06-01');
 
 --
 -- Índices para tabelas despejadas
@@ -215,7 +215,6 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `vagas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_uf` (`id_uf`),
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
@@ -244,7 +243,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `vagas`
 --
 ALTER TABLE `vagas`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restrições para tabelas despejadas

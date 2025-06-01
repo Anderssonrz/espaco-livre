@@ -1,175 +1,239 @@
-<!DOCTYPE html>
 <?php
 session_start();
-include_once ("conexao.php");
+include_once ("conexao.php"); // Espera-se que defina $conexao (mysqli)
 
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+$linha_vaga = null;
+$feedback_messages = $_SESSION['feedback_messages'] ?? []; // Pega mensagens da sessão
+unset($_SESSION['feedback_messages']); // Limpa após usar
 
-$select_vaga = "SELECT vagas.*, estados.*, usuarios.*
-                    FROM vagas
-                    INNER JOIN estados ON vagas.id_uf = estados.id
-                    INNER JOIN usuarios ON vagas.id_usuario = usuarios.id
-                    WHERE vagas.id = '$id'";
+if ($id) {
+    // Usar Prepared Statements para segurança
+    $stmt_vaga = mysqli_prepare($conexao, "SELECT * FROM vagas WHERE id = ?");
+    mysqli_stmt_bind_param($stmt_vaga, "i", $id);
+    mysqli_stmt_execute($stmt_vaga);
+    $result_vaga = mysqli_stmt_get_result($stmt_vaga);
 
-$result_vaga = mysqli_query($conexao, $select_vaga);
-$linha_vaga = mysqli_fetch_assoc($result_vaga);
+    if ($result_vaga && mysqli_num_rows($result_vaga) > 0) {
+        $linha_vaga = mysqli_fetch_assoc($result_vaga);
+    } else {
+        // Vaga não encontrada, redirecionar ou mostrar mensagem de erro
+        $_SESSION['feedback_messages'] = [['type' => 'danger', 'message' => 'Vaga não encontrada.']];
+        header("Location: index.php"); // Ou para uma página de listagem
+        exit;
+    }
+    mysqli_stmt_close($stmt_vaga);
+} else {
+    // ID não fornecido ou inválido
+    $_SESSION['feedback_messages'] = [['type' => 'danger', 'message' => 'ID da vaga inválido ou não fornecido.']];
+    header("Location: index.php"); // Ou para uma página de listagem
+    exit;
+}
 
-$titulo = "upload de foto_vaga";
+$pageTitle = 'Editar Vaga – Espaço Livre'; // Título mais apropriado
+// A variável $titulo = "upload de foto_vaga"; foi removida por não ser utilizada.
 ?>
-
+<!DOCTYPE html>
 <html lang="pt-br">
-    <?php
-        $pageTitle = 'Espaço Livre – Encontre o Estacionamento Ideal';
-        require_once 'components/head.php';   // <head> com CSS/meta/ …
-    ?>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edição de vaga</title>
-</head>
+<?php
+    // Assume-se que components/head.php usa $pageTitle para definir o <title>
+    // e inclui meta charset, viewport, CSS, etc.
+    require_once 'components/head.php';
+?>
 <body>
-    <?php require_once 'components/headerQuatro.php'; ?><br><br><br><br><br>
+    <?php require_once 'components/header.php'; ?>
 
-    <header class="bg-dark py-1">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center text-white">
-                <h1></h1>
-                <!-- <p class="lead fw-normal text-white-50 mb-0">Visualize e gerencie as vagas disponíveis.</p> -->
+    <main class="main">
+        <section id="hero-cadastro-vaga" class="hero section" style="padding-top: 80px; padding-bottom: 20px;">
+            <div class="container" data-aos="fade-up">
+                <div class="row align-items-center justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <div class="hero-content">
+                            <h1 class="mb-2">Editar <span class="accent-text">Vaga</span></h1>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </header>
+        </section>
 
-    <div class="container mt-4">
-        <h2>Vaga código: <?php echo $linha_vaga['id']; ?></h2><br>
+        <section id="form-cadastro-vaga" class="checkout section pt-0">
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+                <?php
+                if (!empty($feedback_messages)) {
+                    echo '<div class="row justify-content-center mb-3"><div class="col-md-10 col-lg-8">';
+                    foreach ($feedback_messages as $msg) {
+                        echo '<div class="alert alert-' . htmlspecialchars($msg['type']) . ' alert-dismissible fade show" role="alert">';
+                        echo htmlspecialchars($msg['message']);
+                        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                        echo '</div>';
+                    }
+                    echo '</div></div>';
+                }
+                ?>
 
-        <form action="saveEditVaga.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="<?php echo $linha_vaga['id']; ?>">
-            <div class="mb-3">
-                <label for="descricao" class="form-label">Descrição da Vaga</label>
-                <div contenteditable="true" id="descricao" name="descricao" style="border: 1px solid #ccc; padding: 10px; min-height: 100px;"><?php echo $linha_vaga['descricao']; ?></div>
-                <input type="hidden" name="descricao" id="descricao_hidden">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-md-10">
+                        <div class="checkout-container">
+                            <form action="saveEditVaga.php" method="POST" enctype="multipart/form-data" class="checkout-form needs-validation" novalidate>
+                                <input type="hidden" name="id_vaga" value="<?php echo htmlspecialchars($linha_vaga['id']); ?>">
+
+                                <div class="checkout-section" id="vaga-info">
+                                    <div class="section-header mb-4">
+                                        <div class="section-number d-none d-md-flex align-items-center justify-content-center">!</div>
+                                        <h3>Informações da Vaga</h3>
+                                    </div>
+                                    <div class="section-content">
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <label for="descricao" class="form-label">Descrição da Vaga <span class="text-danger">*</span></label>
+                                                <input type="text" name="descricao" class="form-control" id="descricao" placeholder="Ex: Vaga coberta..." required value="<?php echo htmlspecialchars($linha_vaga['descricao'] ?? ''); ?>">
+                                                <div class="invalid-feedback">Por favor, insira uma descrição para a vaga.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="cep" class="form-label">CEP <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="cep" name="cep" placeholder="Digite o CEP" maxlength="9" required value="<?php echo htmlspecialchars($linha_vaga['cep'] ?? ''); ?>">
+                                                <div class="invalid-feedback">Por favor, insira um CEP válido.</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="id_uf" class="form-label">UF - Unidade Federativa <span class="text-danger">*</span></label><br>
+                                                <select name="id_uf" id="id_uf" class="form-select" aria-label="Selecione a UF" required>
+                                                    <option value="">Selecione...</option>
+                                                    <?php
+                                                    // Ajustado para usar mysqli, assumindo que $conexao é mysqli
+                                                    $query_estados = "SELECT id, uf, nome FROM estados ORDER BY nome ASC";
+                                                    $result_estados = mysqli_query($conexao, $query_estados);
+                                                    if ($result_estados) {
+                                                        while ($option = mysqli_fetch_assoc($result_estados)) {
+                                                            $selected = (isset($linha_vaga['id_uf']) && $option['id'] == $linha_vaga['id_uf']) ? 'selected' : '';
+                                                            echo "<option value=\"" . htmlspecialchars($option['id']) . "\" {$selected}>" . htmlspecialchars($option['uf'] . ' - ' . $option['nome']) . "</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                                <div class="invalid-feedback">Por favor, selecione uma UF.</div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="cidade" class="form-label">Cidade <span class="text-danger">*</span></label>
+                                                <input type="text" name="cidade" class="form-control" id="cidade" placeholder="Ex: Joinville" required value="<?php echo htmlspecialchars($linha_vaga['cidade'] ?? ''); ?>">
+                                                <div class="invalid-feedback">Por favor, insira a cidade.</div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="bairro" class="form-label">Bairro <span class="text-danger">*</span></label>
+                                                <input type="text" name="bairro" class="form-control" id="bairro" placeholder="Ex: Centro" required value="<?php echo htmlspecialchars($linha_vaga['bairro'] ?? ''); ?>">
+                                                <div class="invalid-feedback">Por favor, insira o bairro.</div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label for="endereco" class="form-label">Endereço (Rua, Av.) <span class="text-danger">*</span></label>
+                                                <input type="text" name="endereco" class="form-control" id="endereco" placeholder="Ex: Rua das Palmeiras" required value="<?php echo htmlspecialchars($linha_vaga['endereco'] ?? ''); ?>">
+                                                <div class="invalid-feedback">Por favor, insira o endereço.</div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label for="numero" class="form-label">Número <span class="text-danger">*</span></label>
+                                                <input type="text" name="numero" class="form-control" id="numero" placeholder="Ex: 123" required value="<?php echo htmlspecialchars($linha_vaga['numero'] ?? ''); ?>">
+                                                <div class="invalid-feedback">Por favor, insira o número.</div>
+                                            </div>
+
+                                            <div class="col-md-8">
+                                                <label for="complemento" class="form-label">Complemento</label>
+                                                <input type="text" name="complemento" class="form-control" id="complemento" placeholder="Ex: Apto 101" value="<?php echo htmlspecialchars($linha_vaga['complemento'] ?? ''); ?>">
+                                            </div>
+
+                                            <div class="col-md-7">
+                                                <label for="foto_vaga" class="form-label">Selecione a nova imagem (opcional)</label>
+                                                <input type="file" name="foto_vaga" accept="image/jpeg, image/png, image/gif, image/webp" class="form-control" id="foto_vaga" />
+                                                <input type="hidden" name="foto_vaga_antiga" value="<?php echo htmlspecialchars($linha_vaga['foto_vaga'] ?? ''); ?>">
+                                                <?php if (!empty($linha_vaga['foto_vaga'])): ?>
+                                                    <p class="mt-2">Foto atual:
+                                                        <a href="<?php echo htmlspecialchars($linha_vaga['foto_vaga']); // Idealmente, um caminho acessível pela web ?>" target="_blank">
+                                                            <?php echo basename(htmlspecialchars($linha_vaga['foto_vaga'])); ?>
+                                                        </a>
+                                                    </p>
+                                                    <?php endif; ?>
+                                                <div class="invalid-feedback">Por favor, selecione uma imagem válida (JPG, PNG, GIF, WEBP).</div>
+                                                <small class="form-text text-muted">Max: 5MB.</small>
+                                            </div>
+
+                                            <div class="col-md-5">
+                                                <label for="preco" class="form-label">Valor da Diária (R$) <span class="text-danger">*</span></label>
+                                                <input type="text" name="preco" class="form-control" id="preco" placeholder="Ex: 25,00" required value="<?php echo htmlspecialchars(number_format($linha_vaga['preco'] ?? 0, 2, ',', '.')); ?>">
+                                                <div class="invalid-feedback">Por favor, insira um valor válido (ex: 25,00).</div>
+                                            </div>
+
+                                            <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-4">
+                                                <button type="submit" name="btnSalvarEdicao" class="btn btn-primary px-4 btn-lg"> <i class="bi bi-check-circle-fill me-2"></i>Salvar Alterações
+                                                </button>
+                                                <button type="reset" class="btn btn-outline-secondary px-4 btn-lg">
+                                                    <i class="bi bi-arrow-counterclockwise me-2"></i>Limpar
+                                                </button>
+                                                <a href="account.php#tab-perfil.php#" class="btn btn-outline-danger px-4 btn-lg"> <i class="bi bi-x-circle me-2"></i>Cancelar
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-                <script>
-                    const descricaoDiv = document.getElementById('descricao');
-                    const descricaoHidden = document.getElementById('descricao_hidden');
-                    descricaoDiv.addEventListener('input', () => {
-                    descricaoHidden.value = descricaoDiv.innerHTML;
-                    });
-                </script>
+        </section>
+    </main>
 
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="id_uf" class="form-label">UF - Unidade Federativa</label><br>
-                    <select name="id_uf" class="form-select" aria-label="Default select example" required>
-                        <?php
-                        $query = $conn->query("SELECT * FROM estados ORDER BY nome ASC");
-                        $registros = $query->fetchAll(PDO::FETCH_ASSOC);
-
-                        foreach ($registros as $option) {
-                            $selected = ($option['id'] == $linha_vaga['id_uf']) ? 'selected' : '';
-                            echo "<option value=\"{$option['id']}\" {$selected}>{$option['uf']} - {$option['nome']}</option>";
+    <?php require_once 'components/footer.php'; // Presume-se que aqui são carregados JS, incluindo jQuery e jQuery Mask ?>
+    <script>
+        // Bootstrap form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
                         }
-                        ?>
-                    </select>
-                </div>
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })();
 
-                <div class="col-md-4">
-                    <label for="cidade" class="form-label">Cidade</label>
-                    <input type="text" class="form-control" id="cidade" name="cidade" value="<?php echo $linha_vaga['cidade']; ?>" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="bairro" class="form-label">Bairro</label>
-                    <input type="text" class="form-control" id="bairro" name="bairro" value="<?php echo $linha_vaga['bairro']; ?>" required>
-                </div>
-            </div>
+        // jQuery Mask (garanta que jQuery e jQuery Mask Plugin estejam carregados antes deste script)
+        $(document).ready(function() {
+            if (typeof $.fn.mask === 'function') {
+                $('#cep').mask('00000-000');
+                $('#preco').mask('#.##0,00', {
+                    reverse: true,
+                    placeholder: "0,00"
+                });
+                // Se tiver outros campos para mascarar, adicione aqui.
+            } else {
+                console.warn('jQuery Mask Plugin não está carregado.');
+            }
 
-            <div class="row mb-3">
-                <div class="col-md-5">
-                    <label for="endereco" class="form-label">Endereço</label>
-                    <input type="text" class="form-control" id="endereco" name="endereco" value="<?php echo $linha_vaga['endereco']; ?>" required>
-                </div>
-                <div class="col-md-2">
-                    <label for="numero" class="form-label">Número</label>
-                    <input type="number" class="form-control" id="numero" name="numero" value="<?php echo $linha_vaga['numero']; ?>">
-                </div>
-                <div class="col-md-5">
-                    <label for="complemento" class="form-label">Complemento</label>
-                    <input type="text" class="form-control" id="complemento" name="complemento" value="<?php echo $linha_vaga['complemento']; ?>">
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="foto_vaga" class="form-label">Selecione a nova imagem (opcional)</label>
-                    <input type="file" name="foto_vaga" accept="assets/image/*" class="form-control" />
-                    <input type="hidden" name="foto_vaga_antiga" value="<?php echo $linha_vaga['foto_vaga']; ?>">
-                    <?php if (!empty($linha_vaga['foto_vaga'])): ?>
-                        <p>Foto atual: <?php echo basename($linha_vaga['foto_vaga']); ?></p>
-                        <?php endif; ?>
-                </div>
-                <div class="col-md-2">
-                    <label for="preco" class="form-label">Preço</label>
-                    <input type="number" class="form-control" id="preco" name="preco" step="0.01" value="<?php echo $linha_vaga['preco']; ?>" required>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="id_usuario" class="form-label">Usuário</label><br>
-                     <select name="id_usuario" class="form-select" aria-label="Default select example" required>
-                        <?php
-                        // Verifique se o ID do usuário logado está na sessão
-                        if (isset($_SESSION['id'])) {
-                            $usuario_logado_id = $_SESSION['id'];
-
-                            // Consulte o banco de dados para obter o nome do usuário logado
-                            $query_logado = $conexao->query("SELECT id, nome FROM usuarios WHERE id = $usuario_logado_id");
-
-                            if ($usuario_logado = $query_logado->fetch_assoc()) {
-                                // Exiba o usuário logado como a opção selecionada
-                                echo "<option value=\"{$usuario_logado['id']}\" selected>{$usuario_logado['nome']}</option>";
-                            }
-
-                            // Opcional: Se você ainda quiser permitir a seleção de outros usuários (com cuidado!),
-                            // você pode adicionar uma opção padrão ou listar os outros usuários aqui.
-                            // Exemplo de opção padrão:
-                            // echo "<option value=\"\" disabled>-- Selecione --</option>";
-
-                            // Se você NÃO quiser permitir a seleção de outros usuários,
-                            // você pode até mesmo desabilitar o select:
-                            // echo '</select><input type="hidden" name="id_usuario" value="' . $usuario_logado['id'] . '">';
-                            // e remover o restante do código dentro do <select>.
-
-                        } else {
-                            // Caso o ID do usuário não esteja na sessão (o que não deveria acontecer
-                            // se o usuário estiver logado), você pode exibir uma mensagem ou
-                            // redirecionar o usuário para a página de login.
-                            echo "<option value=\"\" disabled>Usuário não identificado</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="dataCadastro" class="form-label">Data Cadastro</label>
-                    <input type="date" class="form-control" id="dataCadastro" name="dataCadastro" value="<?php echo htmlspecialchars($linha_vaga['dataCadastro']); ?>" readonly>
-                    <small class="form-text text-muted">A data de cadastro não pode ser alterada.</small>
-                </div>
-            </div>
-
-            <button type="submit" name="btnCadastrar" class="btn btn-primary">Salvar Alterações</button>
-            <button type="button" class="btn btn-danger">Cancelar</button>
-        </form>
-     </div><br><br> 
-        
-
-    <footer class="py-5 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Direitos autorais &copy; Your Website 2025</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/scripts.js"></script>
+            // Lógica para carregar cidades baseadas na UF, se necessário (exemplo básico)
+            // $('#id_uf').change(function() {
+            // var estadoId = $(this).val();
+            // Se você tiver um endpoint para buscar cidades:
+            // $.ajax({
+            // url: 'buscar_cidades.php', // Exemplo de endpoint
+            // type: 'GET',
+            // data: { id_uf: estadoId },
+            // dataType: 'json',
+            // success: function(data) {
+            // var cidadesSelect = $('#id_cidade'); // Supondo que você tenha um select para cidades
+            // cidadesSelect.empty();
+            // cidadesSelect.append('<option value="">Selecione a cidade...</option>');
+            // $.each(data, function(key, value) {
+            // cidadesSelect.append('<option value="' + value.id + '">' + value.nome + '</option>');
+            // });
+            // }
+            // });
+            // });
+        });
+    </script>
 </body>
 </html>
-

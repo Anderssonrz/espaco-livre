@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 15/05/2025 às 00:18
+-- Tempo de geração: 01/06/2025 às 23:41
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -20,8 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `pi2`
 --
-CREATE SCHEMA IF NOT EXISTS `pi2` DEFAULT CHARACTER SET utf8;
-USE `pi2`;
+
 -- --------------------------------------------------------
 
 --
@@ -85,7 +84,7 @@ CREATE TABLE `reservas` (
   `complemento` varchar(255) NOT NULL,
   `quant_dias` int(10) UNSIGNED NOT NULL,
   `valor_reserva` decimal(10,2) NOT NULL,
-  `status` enum('r','l') NOT NULL,
+  `status` enum('r','l','c') NOT NULL COMMENT 'r=Reservado, l=Liberado, c=Cancelado',
   `data_reserva` date DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -94,8 +93,10 @@ CREATE TABLE `reservas` (
 --
 
 INSERT INTO `reservas` (`id_reserva`, `id_usuario`, `id_vaga`, `id_uf`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `quant_dias`, `valor_reserva`, `status`, `data_reserva`) VALUES
-(5, 1, 1, 0, 'Jaraguá do Sul', 'Centro', 'Seu Madruga', '33', 'Próximo a farmácia BB', 5, 18.50, 'r', '2025-05-14'),
-(6, 1, 6, 0, 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', 4, 20.00, 'r', '2025-05-14');
+(5, 1, 1, 0, 'Jaraguá do Sul', 'Centro', 'Seu Madruga', '33', 'Próximo a farmácia BB', 5, 18.50, 'c', '2025-05-14'),
+(6, 1, 6, 0, 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', 4, 20.00, 'r', '2025-05-14'),
+(7, 11, 7, 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1', 'casa', 1, 23.00, 'r', '2025-05-31'),
+(8, 1, 8, 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1350', 'casa', 9, 207.00, 'r', '2025-05-31');
 
 -- --------------------------------------------------------
 
@@ -138,7 +139,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `telefone`, `email`, `senha`, `dataCadastro`, `nivel_acesso`) VALUES
-(1, 'Carlos Tadeu Godoi', '88888888888', '47888888888', 'carlos@gmail.com', '$2y$10$.q8jpU2F1sPt3tvvOAejBOIIiV9oZFA6l8.IInOzY3dqCaR9KoMdW', '2025-05-09', 2),
+(1, 'Adimistrador', '123.456.789-10', '(47) 12345-6789', 'adm@gmail.com', '$2y$10$ompWLChzMvGh7NmDTAMK/eDfRdlJzz7xNcvf/gPqGNHFVcrYuDh4y', '2025-05-09', 2),
 (3, 'Mayckon Ricardo', '44444444444', '47944444444', 'mayckon@gmail.com', '123456789', '2025-03-10', 1),
 (5, 'Bartolomeu', '11000000000', '49000000000', 'barto@hotmail.com', '$2y$10$bUSxlxPevUwyY1a1aNh/neA1N42lIWimRJ/x/eErFeSzciboEki9y', '2025-04-16', 2),
 (7, 'Maria ', '99999999999', '49988888888', 'maria@gmail.com', '$2y$10$zUfzSLPIgcsd9BcbHi0OmerAe.cMYKGi0lZQbjIgrfH6KMN3IfZhG', '2025-04-08', 1),
@@ -156,7 +157,7 @@ INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `telefone`, `email`, `senha`, `data
 CREATE TABLE `vagas` (
   `id` int(20) NOT NULL,
   `descricao` text NOT NULL,
-  `id_uf` int(20) NOT NULL,
+  `cep` varchar(20) NOT NULL,
   `cidade` varchar(255) NOT NULL,
   `bairro` varchar(255) NOT NULL,
   `endereco` varchar(255) NOT NULL,
@@ -164,6 +165,7 @@ CREATE TABLE `vagas` (
   `complemento` varchar(255) DEFAULT NULL,
   `foto_vaga` varchar(255) NOT NULL,
   `preco` decimal(10,2) NOT NULL,
+  `id_uf` int(20) NOT NULL,
   `id_usuario` int(20) NOT NULL,
   `dataCadastro` date DEFAULT curdate()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -172,9 +174,11 @@ CREATE TABLE `vagas` (
 -- Despejando dados para a tabela `vagas`
 --
 
-INSERT INTO `vagas` (`id`, `descricao`, `id_uf`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `foto_vaga`, `preco`, `id_usuario`, `dataCadastro`) VALUES
-(1, 'Vaga carro.', 24, 'Jaraguá do Sul', 'Centro', 'Seu Madruga', '33', 'Próximo a farmácia BB', './img/67f14671e4f21_foto08.png', 18.50, 1, '2025-05-02'),
-(6, 'Vaga para moto.', 24, 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', './img/67f1311e0987d_vaga05.jpg', 20.00, 3, '2025-05-08');
+INSERT INTO `vagas` (`id`, `descricao`, `cep`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `foto_vaga`, `preco`, `id_uf`, `id_usuario`, `dataCadastro`) VALUES
+(6, 'Vaga para moto.', '', 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', './img/67f1311e0987d_vaga05.jpg', 20.00, 24, 3, '2025-05-08'),
+(8, 'Aberta', '', 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1350', 'casa', 'assets/img/vagas/vaga_683924a8ca1fd0.00058114.jpeg', 23.00, 24, 1, '2025-05-30'),
+(9, 'Vaga em prédio residencial.', '', 'Jaraguá do Sul', 'Água Verde', 'Rua Carlos Hardt', '1570', 'Em frente ao Cooper', 'assets/img/vagas/vaga_683cab805e3e12.81594062.jpg', 16.00, 24, 10, '2025-06-01'),
+(13, 'Vaga para carro de passeio.', '89251-100', 'Jaraguá do Sul', 'Centro', 'Rua Presidente Epitácio Pessoa', '44', 'Próximo a farmácia BB', 'assets/img/vagas/vaga_683cc85736aae2.59856803.jpg', 12.00, 24, 10, '2025-06-01');
 
 --
 -- Índices para tabelas despejadas
@@ -211,7 +215,6 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `vagas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_uf` (`id_uf`),
   ADD KEY `id_usuario` (`id_usuario`);
 
 --
@@ -228,7 +231,7 @@ ALTER TABLE `estados`
 -- AUTO_INCREMENT de tabela `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_reserva` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
@@ -240,7 +243,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `vagas`
 --
 ALTER TABLE `vagas`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restrições para tabelas despejadas

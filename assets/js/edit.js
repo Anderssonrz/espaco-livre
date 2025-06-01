@@ -30,5 +30,6 @@
     // Isso pode ficar dentro do seu $(document).ready() existente
     if (typeof $.fn.mask === 'function') {
         $('#edit-telefone').mask('(00) 00000-0000');
-        $('#edit-cpf').mask('000.000.000-00', { reverse: true });
+        $('#edit-cpf').mask('000.000.000-00', { 
+            reverse: true });
     }

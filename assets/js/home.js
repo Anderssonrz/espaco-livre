@@ -1,10 +1,10 @@
 /**
-* Template Name: iLanding
-* Template URL: https://bootstrapmade.com/ilanding-bootstrap-landing-page-template/
-* Updated: Nov 12 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+ * Template Name: iLanding
+ * Template URL: https://bootstrapmade.com/ilanding-bootstrap-landing-page-template/
+ * Updated: Nov 12 2024 with Bootstrap v5.3.3
+ * Author: BootstrapMade.com
+ * License: https://bootstrapmade.com/license/
+ */
 
 (function() {
   "use strict";
@@ -70,13 +70,15 @@
       window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
     }
   }
-  scrollTop.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (scrollTop) { // Adicionado esta verificação para garantir que scrollTop existe
+    scrollTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
-  });
+  }
 
   window.addEventListener('load', toggleScrollTop);
   document.addEventListener('scroll', toggleScrollTop);
@@ -156,20 +158,24 @@
    * Navmenu Scrollspy
    */
   let navmenulinks = document.querySelectorAll('.navmenu a');
+  const header = document.querySelector('#header'); // Seleciona o header para obter sua altura
+  const headerHeight = header ? header.offsetHeight : 0; // Obtém a altura do header ou 0 se não existir
 
   function navmenuScrollspy() {
+    const scrollPosition = window.scrollY + headerHeight + 10; // Considera a altura do header + uma pequena tolerância
+
     navmenulinks.forEach(navmenulink => {
       if (!navmenulink.hash) return;
-      let section = document.querySelector(navmenulink.hash);
+      const section = document.querySelector(navmenulink.hash);
       if (!section) return;
-      let position = window.scrollY + 200;
-      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
+
+      if (scrollPosition >= section.offsetTop && scrollPosition < (section.offsetTop + section.offsetHeight)) {
         document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
         navmenulink.classList.add('active');
       } else {
         navmenulink.classList.remove('active');
       }
-    })
+    });
   }
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
