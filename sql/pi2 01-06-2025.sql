@@ -20,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `pi2`
 --
-
+CREATE SCHEMA IF NOT EXISTS `pi2` DEFAULT CHARACTER SET utf8;
+USE `pi2`;
 -- --------------------------------------------------------
 
 --
@@ -175,7 +176,6 @@ CREATE TABLE `vagas` (
 --
 
 INSERT INTO `vagas` (`id`, `descricao`, `cep`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `foto_vaga`, `preco`, `id_uf`, `id_usuario`, `dataCadastro`) VALUES
-(6, 'Vaga para moto.', '', 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', './img/67f1311e0987d_vaga05.jpg', 20.00, 24, 3, '2025-05-08'),
 (8, 'Aberta', '', 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1350', 'casa', 'assets/img/vagas/vaga_683924a8ca1fd0.00058114.jpeg', 23.00, 24, 1, '2025-05-30'),
 (9, 'Vaga em prédio residencial.', '', 'Jaraguá do Sul', 'Água Verde', 'Rua Carlos Hardt', '1570', 'Em frente ao Cooper', 'assets/img/vagas/vaga_683cab805e3e12.81594062.jpg', 16.00, 24, 10, '2025-06-01'),
 (13, 'Vaga para carro de passeio.', '89251-100', 'Jaraguá do Sul', 'Centro', 'Rua Presidente Epitácio Pessoa', '44', 'Próximo a farmácia BB', 'assets/img/vagas/vaga_683cc85736aae2.59856803.jpg', 12.00, 24, 10, '2025-06-01');
