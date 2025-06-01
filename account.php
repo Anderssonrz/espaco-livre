@@ -152,9 +152,9 @@ require_once 'components/head.php';
                   </li>
                 </ul>
                 <div class="menu-footer mt-4 pt-3 border-top">
-                  <a href="sair.php" class="btn btn-outline-danger w-100">
-                    <i class="bi bi-box-arrow-right me-2"></i>
-                    <span>Sair</span>
+                  <a href="sair.php" class="logout-link">
+                    <i style="color: red;" class="bi bi-box-arrow-right me-2"></i>
+                    <span style="color: red;">Sair</span>
                   </a>
                 </div>
               </nav>
@@ -266,7 +266,7 @@ require_once 'components/head.php';
                                   <i class="bi bi-x-circle me-1"></i>Cancelar Reserva
                                 </a>
                               <?php endif; ?>
-                               <!-- <a href="editar_reserva.php?id_reserva=<?= $reserva['id_reserva'] ?>" class="btn btn-sm btn-outline-primary disabled ms-2" aria-disabled="true">Editar Reserva (Em breve)</a> -->
+                              <!-- <a href="editar_reserva.php?id_reserva=<?= $reserva['id_reserva'] ?>" class="btn btn-sm btn-outline-primary disabled ms-2" aria-disabled="true">Editar Reserva (Em breve)</a> -->
                             </div>
                           </div>
                         <?php endforeach; ?>
@@ -288,33 +288,67 @@ require_once 'components/head.php';
                         <?php foreach ($minhas_vagas_cadastradas as $vaga_cadastrada): ?>
                           <div class="col">
                             <div class="card h-100 shadow-sm">
-                              <?php if (!empty($vaga_cadastrada['foto_vaga'])): ?>
-                                <img src="<?= htmlspecialchars($vaga_cadastrada['foto_vaga']) ?>" class="card-img-top" alt="Foto da Vaga" style="height: 200px; object-fit: cover;">
+                              <?php if (!empty($vaga_cadastrada['foto_vaga']) && file_exists($vaga_cadastrada['foto_vaga'])): // Adicionada verificação file_exists 
+                              ?>
+                                <img src="<?= htmlspecialchars($vaga_cadastrada['foto_vaga']) ?>" class="card-img-top" alt="Foto da Vaga: <?= htmlspecialchars($vaga_cadastrada['descricao']) ?>" style="height: 200px; object-fit: cover;">
                               <?php else: ?>
-                                <div style="height: 200px; background-color: #f0f0f0; display:flex; align-items:center; justify-content:center; color: #6c757d;">Sem Imagem</div>
+                                <div class="d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f0f0f0; color: #6c757d;">
+                                  <i class="bi bi-image fs-1"></i> <span class="ms-2">Sem Imagem</span>
+                                </div>
                               <?php endif; ?>
-                              <div class="card-body">
-                                <h5 class="card-title text-primary"><?= htmlspecialchars($vaga_cadastrada['descricao']) ?></h5>
-                                <p class="card-text small">
-                                  <?= htmlspecialchars($vaga_cadastrada['endereco'] . ', ' . $vaga_cadastrada['numero']) ?><br>
-                                  <?= htmlspecialchars($vaga_cadastrada['bairro'] . ', ' . $vaga_cadastrada['cidade'] . ' - ' . $vaga_cadastrada['estado_uf_vaga']) ?>
-                                </p>
-                                <p class="card-text fw-bold">Diária: R$ <?= htmlspecialchars(number_format($vaga_cadastrada['preco'], 2, ',', '.')) ?></p>
+                              <div class="card-body d-flex flex-column">
+                                <div>
+                                  <h5 class="card-title text-primary"><?= htmlspecialchars($vaga_cadastrada['descricao']) ?></h5>
+                                  <p class="card-text small">
+                                    <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
+                                    <?= htmlspecialchars($vaga_cadastrada['endereco'] . ', ' . $vaga_cadastrada['numero']) ?><br>
+                                    <span class="ms-3"><?= htmlspecialchars($vaga_cadastrada['bairro'] . ', ' . $vaga_cadastrada['cidade'] . ' - ' . $vaga_cadastrada['estado_uf_vaga']) ?></span>
+                                  </p>
+                                  <p class="card-text fw-bold">Diária: R$ <?= htmlspecialchars(number_format($vaga_cadastrada['preco'], 2, ',', '.')) ?></p>
+                                  <p class="card-text small mt-2">
+                                    <strong>Status:</strong>
+                                    <span class="badge bg-<?= ($vaga_cadastrada['status_vaga'] == 'ativa') ? 'success' : 'secondary'; ?>">
+                                      <?= ucfirst(htmlspecialchars($vaga_cadastrada['status_vaga'])) ?>
+                                    </span>
+                                  </p>
+                                </div>
                               </div>
-                              <div class="card-footer bg-transparent border-top-0">
-                                <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-primary w-100">
-                                  <i class="bi bi-pencil-square me-1"></i>Editar Vaga
-                                </a><br>
-                                
-                                {/* Adicionar opção de ver reservas desta vaga, desativar, etc. */}
+                              <div class="card-footer bg-light p-2 mt-auto">
+                                <div class="d-grid gap-2">
+                                    <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                      <i class="bi bi-pencil-square me-1"></i>Editar Vaga
+                                    </a>
+                                    <?php if ($vaga_cadastrada['status_vaga'] == 'ativa'): ?>
+                                      <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=desativar"
+                                        class="btn btn-sm btn-outline-warning"
+                                        onclick="return confirm('Tem certeza que deseja DESATIVAR esta vaga? Ela não aparecerá mais nas buscas para novas reservas.');">
+                                        <i class="bi bi-pause-circle me-1"></i>Desativar Vaga
+                                      </a>
+                                    <?php else: ?>
+                                      <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=ativar"
+                                        class="btn btn-sm btn-outline-success"
+                                        onclick="return confirm('Tem certeza que deseja ATIVAR esta vaga? Ela voltará a aparecer nas buscas.');">
+                                        <i class="bi bi-play-circle me-1"></i>Ativar Vaga
+                                      </a>
+                                    <?php endif; ?>
+                                    <a href="ver_reservas_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>"
+                                      class="btn btn-sm btn-outline-info">
+                                      <i class="bi bi-list-check me-1"></i>Ver Reservas
+                                    </a>
+                                </div>
                               </div>
                             </div>
                           </div>
                         <?php endforeach; ?>
                       </div>
                     <?php else: ?>
-                      <p class="text-muted">Você ainda não cadastrou nenhuma vaga.</p>
-                      <p><a href="cadastrar_vaga.php">Clique aqui</a> para cadastrar sua primeira vaga!</p>
+                      <div class="text-center py-5">
+                        <i class="bi bi-car-front-fill fs-1 text-muted d-block mb-2"></i>
+                        <p class="lead text-muted">Você ainda não cadastrou nenhuma vaga.</p>
+                        <p><a href="cadastrarVaga.php" class="btn btn-lg btn-success">
+                            <i class="bi bi-plus-circle-fill me-2"></i>Cadastre sua primeira vaga!
+                          </a></p>
+                      </div>
                     <?php endif; ?>
                   </div>
 
