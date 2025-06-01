@@ -43,7 +43,7 @@ $pageTitle = ($vaga ? 'Detalhes: ' . htmlspecialchars($vaga['descricao']) : 'Det
     <?php require_once 'components/header.php'; // Inclui o cabeçalho ?>
 
     <main class="main">
-        <div class="container mt-4 pt-lg-4"> {/* Adicionado padding-top para o header fixo */}
+        <div class="container mt-4 pt-lg-4">
             
             <?php if ($feedback_message): ?>
                 <div class="row justify-content-center"><div class="col-md-8">
@@ -110,9 +110,9 @@ $pageTitle = ($vaga ? 'Detalhes: ' . htmlspecialchars($vaga['descricao']) : 'Det
 
                                 if (isset($_SESSION['id'])) { // Usuário logado
                                     if ($_SESSION['id'] == $vaga['id_usuario']) { // É o proprietário
-                                        echo '<a href="editar_vaga.php?id_vaga=' . $vaga['id'] . '" class="btn btn-primary w-100 mb-2"><i class="bi bi-pencil-square me-2"></i>Editar Minha Vaga</a>';
+                                        echo '<a href="editVaga.php?id=' . $vaga['id'] . '" class="btn btn-primary w-100 mb-2"><i class="bi bi-pencil-square me-2"></i>Editar Minha Vaga</a>';
                                     } else { // Não é o proprietário, pode reservar (se vaga estiver disponível - lógica de disponibilidade não inclusa aqui)
-                                        echo '<a href="reservar_vaga.php?id=' . $vaga['id'] . '" class="btn btn-success btn-lg w-100 mb-2"><i class="bi bi-calendar-check me-2"></i>Reservar Esta Vaga</a>';
+                                        echo '<a href="cadastrarReserva.php?id=' . $vaga['id'] . '" class="btn btn-success btn-lg w-100 mb-2"><i class="bi bi-calendar-check me-2"></i>Reservar Esta Vaga</a>';
                                     }
                                 } else { // Não logado
                                     echo '<a href="login.php?redirect=detalhes_vaga.php?id=' . $vaga['id'] . '" class="btn btn-success btn-lg w-100 mb-2"><i class="bi bi-box-arrow-in-right me-2"></i>Faça Login para Reservar</a>';
