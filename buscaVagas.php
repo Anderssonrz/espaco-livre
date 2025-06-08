@@ -17,16 +17,22 @@ $display_preco_min = ($filtro_preco_min_get !== null && $filtro_preco_min_get !=
 $display_preco_max = ($filtro_preco_max_get !== null && $filtro_preco_max_get !== '') ? htmlspecialchars($filtro_preco_max_get) : '500';
 
 
-// Condições SQL
+// ...
 $condicoes = [];
 $params = [];
 $types = "";
 
+// ADICIONE ESTA LINHA PRIMEIRO
+// Garante que APENAS vagas com status 'ativa' sejam mostradas nas buscas.
+$condicoes[] = "v.status_vaga = 'ativa'"; 
+
+// Agora, adicione as outras condições de filtro
 if (!empty($filtro_descricao)) {
     $condicoes[] = 'v.descricao LIKE ?';
     $params[] = '%' . str_replace(' ', '%', $filtro_descricao) . '%';
     $types .= "s";
 }
+
 if (!empty($filtro_cidade)) {
     $condicoes[] = 'v.cidade LIKE ?';
     $params[] = '%' . $filtro_cidade . '%';

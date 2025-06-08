@@ -51,12 +51,20 @@ try {
 
   // 3. Buscar "Minhas Vagas Cadastradas"
   // (Incluindo UF da vaga)
+  // Consulta ATUALIZADA para "Minhas Vagas Cadastradas"
   $stmt_vagas = $conn->prepare(
-    "SELECT v.*, e.uf AS estado_uf_vaga
-         FROM vagas v
-         JOIN estados e ON v.id_uf = e.id
-         WHERE v.id_usuario = ?
-         ORDER BY v.dataCadastro DESC, v.id DESC"
+    "SELECT v.*, e.uf AS estado_uf_vaga,
+       EXISTS(SELECT 1
+              FROM reservas r
+              WHERE r.id_vaga = v.id
+                AND r.status = 'r' -- Apenas reservas com status 'Reservado'
+                -- Verifica se o período da reserva ainda não terminou
+                AND DATE_ADD(r.data_reserva, INTERVAL r.quant_dias - 1 DAY) >= CURDATE()
+             ) AS tem_reserva_ativa_ou_futura
+     FROM vagas v
+     JOIN estados e ON v.id_uf = e.id
+     WHERE v.id_usuario = ?
+     ORDER BY v.dataCadastro DESC, v.id DESC"
   );
   $stmt_vagas->execute([$id_usuario]);
   $minhas_vagas_cadastradas = $stmt_vagas->fetchAll(PDO::FETCH_ASSOC);
@@ -166,65 +174,95 @@ require_once 'components/head.php';
               <div class="card-body">
                 <div class="tab-content" id="myTabContent">
                   <div class="tab-pane fade show active" id="tab-perfil" role="tabpanel" aria-labelledby="perfil-tab">
-                    <div class="tab-pane fade show active" id="tab-perfil" role="tabpanel" aria-labelledby="perfil-tab">
-                      <h3 class="mb-4">Meu Perfil</h3>
 
-                      <div id="perfil-display-section">
-                        <?php if ($usuario): ?>
-                          <div class="mb-3">
-                            <p><strong>Nome Completo:</strong><br> <?= htmlspecialchars($usuario['nome'] ?? 'Não informado') ?></p>
-                            <p><strong>CPF:</strong><br> <span id="display-cpf"><?= htmlspecialchars($usuario['cpf'] ?? 'Não informado') ?></span></p>
-                            <p><strong>Telefone:</strong><br> <span id="display-telefone"><?= htmlspecialchars($usuario['telefone'] ?? 'Não informado') ?></span></p>
-                            <p><strong>Email:</strong><br> <?= htmlspecialchars($usuario['email'] ?? 'Não informado') ?></p>
-                          </div>
+                    <div id="perfil-display-section">
+                      <h3 class="mb-4">Meu Perfil</h3>
+                      <?php if ($usuario): ?>
+                        <div class="mb-3">
+                          <p><strong>Nome Completo:</strong><br> <?= htmlspecialchars($usuario['nome'] ?? 'Não informado') ?></p>
+                          <p><strong>CPF:</strong><br> <span id="display-cpf"><?= htmlspecialchars($usuario['cpf'] ?? 'Não informado') ?></span></p>
+                          <p><strong>Telefone:</strong><br> <span id="display-telefone"><?= htmlspecialchars($usuario['telefone'] ?? 'Não informado') ?></span></p>
+                          <p><strong>Email:</strong><br> <?= htmlspecialchars($usuario['email'] ?? 'Não informado') ?></p>
+                        </div>
+                        <div class="d-flex gap-2">
                           <button type="button" id="btnAbrirFormEditarPerfil" class="btn btn-primary">
                             <i class="bi bi-pencil-square me-2"></i>Editar Perfil
                           </button>
-                        <?php else: ?>
-                          <p class="text-danger">Não foi possível carregar os dados do seu perfil.</p>
-                        <?php endif; ?>
-                      </div>
-
-                      <div id="perfil-edit-form-section" style="display:none;">
-                        <h4 class="mb-3">Editar Informações Pessoais</h4>
-                        <?php if ($usuario): // Garante que o formulário só apareça se os dados do usuário existirem 
-                        ?>
-                          <form method="POST" action="editarPerfil.php" class="needs-validation" novalidate id="formEditarPerfilReal">
-                            <div class="row g-3">
-                              <div class="col-md-6">
-                                <label for="edit-nome" class="form-label">Nome Completo</label>
-                                <input type="text" class="form-control" id="edit-nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required>
-                                <div class="invalid-feedback">Por favor, informe seu nome.</div>
-                              </div>
-                              <div class="col-md-6">
-                                <label for="edit-cpf" class="form-label">CPF</label>
-                                <input type="text" class="form-control" id="edit-cpf" name="cpf" value="<?= htmlspecialchars($usuario['cpf'] ?? '') ?>" required>
-                                <div class="invalid-feedback">Por favor, informe um CPF válido.</div>
-                              </div>
-                              <div class="col-md-6">
-                                <label for="edit-telefone" class="form-label">Telefone</label>
-                                <input type="tel" class="form-control" id="edit-telefone" name="telefone" value="<?= htmlspecialchars($usuario['telefone'] ?? '') ?>">
-                              </div>
-                              <div class="col-md-6">
-                                <label for="edit-email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="edit-email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
-                                <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
-                              </div>
-                            </div>
-                            <div class="form-buttons mt-4">
-                              <button type="submit" name="btnEditarPerfil" class="btn btn-success">
-                                <i class="bi bi-save me-2"></i>Salvar Alterações
-                              </button>
-                              <button type="button" id="btnCancelarEdicaoPerfil" class="btn btn-outline-secondary ms-2">
-                                Cancelar
-                              </button>
-                            </div>
-                          </form>
-                        <?php endif; ?>
-                      </div>
+                          <button type="button" id="btnAbrirFormEditarSenha" class="btn btn-warning">
+                            <i class="bi bi-key-fill me-2"></i>Alterar Senha
+                          </button>
+                        </div>
+                      <?php else: ?>
+                        <p class="text-danger">Não foi possível carregar os dados do seu perfil.</p>
+                      <?php endif; ?>
                     </div>
-                  </div>
 
+                    <div id="perfil-edit-form-section" style="display:none;">
+                      <h4 class="mb-3 text-primary">Editando Informações Pessoais...</h4>
+                      <?php if ($usuario): ?>
+                        <form method="POST" action="editarPerfil.php" class="needs-validation" novalidate id="formEditarPerfilReal">
+                          <div class="row g-3">
+                            <div class="col-md-6">
+                              <label for="edit-nome" class="form-label">Nome Completo</label>
+                              <input type="text" class="form-control" id="edit-nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required>
+                            </div>
+                            <div class="col-md-6">
+                              <label for="edit-cpf" class="form-label">CPF</label>
+                              <input type="text" class="form-control" id="edit-cpf" name="cpf" value="<?= htmlspecialchars($usuario['cpf'] ?? '') ?>" required>
+                            </div>
+                            <div class="col-md-6">
+                              <label for="edit-telefone" class="form-label">Telefone</label>
+                              <input type="tel" class="form-control" id="edit-telefone" name="telefone" value="<?= htmlspecialchars($usuario['telefone'] ?? '') ?>">
+                            </div>
+                            <div class="col-md-6">
+                              <label for="edit-email" class="form-label">Email</label>
+                              <input type="email" class="form-control" id="edit-email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
+                            </div>
+                          </div>
+                          <div class="form-buttons mt-4">
+                            <button type="submit" name="btnEditarPerfil" class="btn btn-success">
+                              <i class="bi bi-save me-2"></i>Salvar Alterações
+                            </button>
+                            <button type="button" id="btnCancelarEdicaoPerfil" class="btn btn-outline-secondary ms-2">
+                              Cancelar
+                            </button>
+                          </div>
+                        </form>
+                      <?php endif; ?>
+                    </div>
+
+                    <div id="senha-edit-form-section" style="display:none;">
+                      <h4 class="mb-3 text-primary">Alterar Senha...</h4>
+                      <p class="text-muted small">Para sua segurança, informe sua senha atual para definir uma nova.</p>
+
+                      <form method="POST" action="salvar_nova_senha.php" class="needs-validation mt-4" novalidate id="formAlterarSenhaReal">
+                        <div class="row g-3">
+                          <div class="col-12">
+                            <label for="senha_atual" class="form-label">Senha Atual</label>
+                            <input type="password" class="form-control" id="senha_atual" name="senha_atual" required autocomplete="current-password">
+                          </div>
+                          <div class="col-md-6">
+                            <label for="senha_nova" class="form-label">Nova Senha</label>
+                            <input type="password" class="form-control" id="senha_nova" name="senha_nova" required minlength="8" autocomplete="new-password">
+                            <small class="form-text text-muted">Mínimo de 8 caracteres.</small>
+                          </div>
+                          <div class="col-md-6">
+                            <label for="senha_nova_confirm" class="form-label">Confirmar Nova Senha</label>
+                            <input type="password" class="form-control" id="senha_nova_confirm" name="senha_nova_confirm" required autocomplete="new-password">
+                          </div>
+                        </div>
+                        <div class="form-buttons mt-4">
+                          <button type="submit" name="btnAlterarSenha" class="btn btn-warning">
+                            <i class="bi bi-key-fill me-2"></i>Confirmar Alteração de Senha
+                          </button>
+                          <button type="button" id="btnCancelarEdicaoSenha" class="btn btn-outline-secondary ms-2">
+                            Cancelar
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+
+                  </div>
                   <div class="tab-pane fade" id="tab-reservas" role="tabpanel" aria-labelledby="reservas-tab">
                     <h3 class="mb-4">Minhas Reservas</h3>
                     <?php if (!empty($minhas_reservas)): ?>
@@ -236,7 +274,22 @@ require_once 'components/head.php';
                               <small class="text-muted">Reserva #<?= htmlspecialchars($reserva['id_reserva']) ?></small>
                             </div>
                             <p class="mb-1">
-
+                              <?php
+                              // --- Lógica para calcular a data de fim da reserva ---
+                              $data_inicio = new DateTime($reserva['data_reserva']);
+                              $data_fim = new DateTime($reserva['data_reserva']);
+                              // Adiciona a quantidade de dias (-1 porque o primeiro dia já conta)
+                              $data_fim->add(new DateInterval('P' . ($reserva['quant_dias'] - 1) . 'D'));
+                              ?>
+                              <strong>Período da Reserva:</strong><br>
+                              <i class="bi bi-calendar-arrow-down text-success"></i> Início: <strong><?= $data_inicio->format('d/m/Y') ?></strong><br>
+                              <i class="bi bi-calendar-arrow-up text-danger"></i> Fim: <strong><?= $data_fim->format('d/m/Y') ?></strong>
+                              (<?= htmlspecialchars($reserva['quant_dias']) ?> dia(s))
+                            </p>
+                            <p class="mb-1">
+                              <strong>Valor Total:</strong> R$ <?= htmlspecialchars(number_format($reserva['valor_reserva'], 2, ',', '.')) ?>
+                            </p>
+                            <p class="mb-1">
                               <strong>Status:</strong>
                               <span class="badge bg-<?= $reserva['status'] == 'r' ? 'success' : ($reserva['status'] == 'c' ? 'danger' : 'secondary') ?>">
                                 <?php
@@ -246,7 +299,7 @@ require_once 'components/head.php';
                                     break;
                                   case 'l':
                                     echo 'Liberado';
-                                    break; // Este status pode não fazer sentido para reservas do usuário
+                                    break;
                                   case 'c':
                                     echo 'Cancelado';
                                     break;
@@ -288,16 +341,17 @@ require_once 'components/head.php';
                         <?php foreach ($minhas_vagas_cadastradas as $vaga_cadastrada): ?>
                           <div class="col">
                             <div class="card h-100 shadow-sm">
-                              <?php if (!empty($vaga_cadastrada['foto_vaga']) && file_exists($vaga_cadastrada['foto_vaga'])): // Adicionada verificação file_exists 
+                              <?php
+                              // Verificação para garantir que o arquivo de imagem existe no servidor
+                              $caminho_foto = !empty($vaga_cadastrada['foto_vaga']) && file_exists($vaga_cadastrada['foto_vaga'])
+                                ? $vaga_cadastrada['foto_vaga']
+                                : 'assets/img/sem-imagem.jpg'; // Imagem padrão
                               ?>
-                                <img src="<?= htmlspecialchars($vaga_cadastrada['foto_vaga']) ?>" class="card-img-top" alt="Foto da Vaga: <?= htmlspecialchars($vaga_cadastrada['descricao']) ?>" style="height: 200px; object-fit: cover;">
-                              <?php else: ?>
-                                <div class="d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f0f0f0; color: #6c757d;">
-                                  <i class="bi bi-image fs-1"></i> <span class="ms-2">Sem Imagem</span>
-                                </div>
-                              <?php endif; ?>
+                              <img src="<?= htmlspecialchars($caminho_foto) ?>" class="card-img-top" alt="Foto da Vaga: <?= htmlspecialchars($vaga_cadastrada['descricao']) ?>" style="height: 200px; object-fit: cover;">
+
                               <div class="card-body d-flex flex-column">
-                                <div>
+
+                                <div class="mb-auto">
                                   <h5 class="card-title text-primary"><?= htmlspecialchars($vaga_cadastrada['descricao']) ?></h5>
                                   <p class="card-text small">
                                     <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
@@ -313,30 +367,41 @@ require_once 'components/head.php';
                                   </p>
                                 </div>
                               </div>
+
                               <div class="card-footer bg-light p-2 mt-auto">
                                 <div class="d-grid gap-2">
-                                    <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-outline-primary">
-                                      <i class="bi bi-pencil-square me-1"></i>Editar Vaga
-                                    </a>
-                                    <?php if ($vaga_cadastrada['status_vaga'] == 'ativa'): ?>
+                                  <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil-square me-1"></i>Editar Vaga
+                                  </a>
+
+                                  <?php if ($vaga_cadastrada['status_vaga'] == 'ativa'): ?>
+                                    <?php if ($vaga_cadastrada['tem_reserva_ativa_ou_futura']): ?>
+                                      <button class="btn btn-sm btn-outline-warning" disabled
+                                        title="Esta vaga não pode ser desativada pois possui reservas ativas ou futuras.">
+                                        <i class="bi bi-pause-circle me-1"></i>Desativar Vaga
+                                      </button>
+                                    <?php else: ?>
                                       <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=desativar"
                                         class="btn btn-sm btn-outline-warning"
-                                        onclick="return confirm('Tem certeza que deseja DESATIVAR esta vaga? Ela não aparecerá mais nas buscas para novas reservas.');">
+                                        onclick="return confirm('Tem certeza que deseja DESATIVAR esta vaga? Ela não aparecerá mais nas buscas.');">
                                         <i class="bi bi-pause-circle me-1"></i>Desativar Vaga
                                       </a>
-                                    <?php else: ?>
-                                      <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=ativar"
-                                        class="btn btn-sm btn-outline-success"
-                                        onclick="return confirm('Tem certeza que deseja ATIVAR esta vaga? Ela voltará a aparecer nas buscas.');">
-                                        <i class="bi bi-play-circle me-1"></i>Ativar Vaga
-                                      </a>
                                     <?php endif; ?>
-                                    <a href="ver_reservas_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>"
-                                      class="btn btn-sm btn-outline-info">
-                                      <i class="bi bi-list-check me-1"></i>Ver Reservas
+                                  <?php else: ?>
+                                    <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=ativar"
+                                      class="btn btn-sm btn-outline-success"
+                                      onclick="return confirm('Tem certeza que deseja ATIVAR esta vaga? Ela voltará a aparecer nas buscas.');">
+                                      <i class="bi bi-play-circle me-1"></i>Ativar Vaga
                                     </a>
+                                  <?php endif; ?>
+
+                                  <a href="ver_reservas_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>"
+                                    class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-list-check me-1"></i>Ver Reservas
+                                  </a>
                                 </div>
                               </div>
+
                             </div>
                           </div>
                         <?php endforeach; ?>
@@ -351,7 +416,6 @@ require_once 'components/head.php';
                       </div>
                     <?php endif; ?>
                   </div>
-
                 </div>
               </div>
             </div>
