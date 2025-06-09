@@ -1,29 +1,49 @@
+<!DOCTYPE html>
 <?php
 require_once("conexao.php");
 
 if (isset($_POST['btnCadastrar'])) {
+
   $nome = $_POST['nome'];
   $cpf = $_POST['cpf'];
   $telefone = $_POST['telefone'];
   $email = $_POST['email'];
   $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
-  $sql = "INSERT INTO usuarios (nome, cpf, telefone, email, senha) VALUES (?, ?, ?, ?, ?)";
-  $stmt = mysqli_prepare($conexao, $sql);
-  mysqli_stmt_bind_param($stmt, "sssss", $nome, $cpf, $telefone, $email, $senha);
+  // --- 3. VERIFICAR SE O CPF JÁ EXISTE ---
+  // Usar Prepared Statements para prevenir SQL Injection é ESSENCIAL
+  $sql_verifica = "SELECT id FROM usuarios WHERE cpf = ?";
+  $stmt_verifica = $conexao->prepare($sql_verifica);
+  $stmt_verifica->bind_param("s", $cpf); // "s" significa que o parâmetro é uma string
+  $stmt_verifica->execute();
+  $stmt_verifica->store_result(); // Armazena o resultado para poder verificar o número de linhas
 
-  if (mysqli_stmt_execute($stmt)) {
-    header("Location: login.php?cadastro=sucesso");
-    exit();
+  if ($stmt_verifica->num_rows > 0) {
+   echo "<div class='alert alert-success'>O CPF informado já está cadastrado em outra conta.</div>";
+   
   } else {
-    $msgErroCadastro = "Erro ao inserir: " . mysqli_error($conexao);
-  }
+    // --- 5. SE NÃO EXISTIR, INSERIR O NOVO USUÁRIO ---
+    $sql = "INSERT INTO usuarios (nome, cpf, telefone, email, senha) VALUES (?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($conexao, $sql);
+    mysqli_stmt_bind_param($stmt, "sssss", $nome, $cpf, $telefone, $email, $senha);
 
-  mysqli_stmt_close($stmt);
+    if (mysqli_stmt_execute($stmt)) {
+      
+      echo "<div class='alert alert-success'>Cadastro realizado com sucesso! Faça login.</div>";
+      header("Location: login.php?cadastro=sucesso");
+      
+      exit();
+    } else {
+      $msgErroCadastro = "Erro ao inserir: " . mysqli_error($conexao);
+    }
+    mysqli_stmt_close($stmt);
+    $stmt_insere->close();
+  }  
 }
+
+
 ?>
 
-<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -32,6 +52,11 @@ if (isset($_POST['btnCadastrar'])) {
   <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="./assets/css/login.css" />
   <title>Espaço Livre</title>
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet" />
+  
 </head>
 
 <body>
@@ -123,12 +148,10 @@ if (isset($_POST['btnCadastrar'])) {
   }
   ?>
 
-  <?php require_once 'components/footer.php'; ?>
-
   <!-- SCRIPTS -->
   <script src="./assets/js/login.js"></script>
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('#telefone').mask('(00) 00000-0000');
       $('#CPF').mask('000.000.000-00', {
         reverse: true

@@ -109,7 +109,8 @@ require_once 'components/head.php';
           echo $feedback_message;
           echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
           echo '</div></div></div>';
-          if (isset($_SESSION['feedback'])) unset($_SESSION['feedback']); // Limpa após exibir
+          if (isset($_SESSION['feedback']))
+            unset($_SESSION['feedback']); // Limpa após exibir
         }
         // Exibir erro fatal de carregamento, se houver
         if (isset($erro_fatal_carregamento)) {
@@ -120,7 +121,8 @@ require_once 'components/head.php';
         ?>
 
         <div class="mobile-menu d-lg-none mb-4">
-          <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu" aria-expanded="false" aria-controls="profileMenu">
+          <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#profileMenu"
+            aria-expanded="false" aria-controls="profileMenu">
             <i class="bi bi-list"></i>
             <span>Menu da Conta</span>
           </button>
@@ -131,7 +133,8 @@ require_once 'components/head.php';
             <div class="profile-menu collapse d-lg-block" id="profileMenu">
               <?php if ($usuario): ?>
                 <div class="user-info mb-4 text-center text-lg-start" data-aos="fade-right">
-                  <div class="user-avatar mx-auto ms-lg-0 mb-2" style="width: 80px; height: 80px; background-color: #e9ecef; border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                  <div class="user-avatar mx-auto ms-lg-0 mb-2"
+                    style="width: 80px; height: 80px; background-color: #e9ecef; border-radius: 50%; display:flex; align-items:center; justify-content:center;">
                     <i class="bi bi-person-fill" style="font-size: 2.5rem; color: #6c757d;"></i>
                   </div>
                   <h4><?= htmlspecialchars($usuario['nome'] ?? 'Usuário') ?></h4>
@@ -141,19 +144,22 @@ require_once 'components/head.php';
               <nav class="menu-nav">
                 <ul class="nav flex-column nav-pills" role="tablist">
                   <li class="nav-item">
-                    <a class="nav-link active" id="perfil-tab" data-bs-toggle="tab" href="#tab-perfil" role="tab" aria-controls="tab-perfil" aria-selected="true">
+                    <a class="nav-link active" id="perfil-tab" data-bs-toggle="tab" href="#tab-perfil" role="tab"
+                      aria-controls="tab-perfil" aria-selected="true">
                       <i class="bi bi-person-circle me-2"></i>
                       <span>Meu Perfil</span>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" id="reservas-tab" data-bs-toggle="tab" href="#tab-reservas" role="tab" aria-controls="tab-reservas" aria-selected="false">
+                    <a class="nav-link" id="reservas-tab" data-bs-toggle="tab" href="#tab-reservas" role="tab"
+                      aria-controls="tab-reservas" aria-selected="false">
                       <i class="bi bi-calendar2-check me-2"></i>
                       <span>Minhas Reservas</span>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" id="vagas-tab" data-bs-toggle="tab" href="#tab-vagas" role="tab" aria-controls="tab-vagas" aria-selected="false">
+                    <a class="nav-link" id="vagas-tab" data-bs-toggle="tab" href="#tab-vagas" role="tab"
+                      aria-controls="tab-vagas" aria-selected="false">
                       <i class="bi bi-car-front-fill me-2"></i>
                       <span>Minhas Vagas</span>
                     </a>
@@ -291,7 +297,8 @@ require_once 'components/head.php';
                             </p>
                             <p class="mb-1">
                               <strong>Status:</strong>
-                              <span class="badge bg-<?= $reserva['status'] == 'r' ? 'success' : ($reserva['status'] == 'c' ? 'danger' : 'secondary') ?>">
+                              <span
+                                class="badge bg-<?= $reserva['status'] == 'r' ? 'success' : ($reserva['status'] == 'c' ? 'danger' : 'secondary') ?>">
                                 <?php
                                 switch ($reserva['status']) {
                                   case 'r':
@@ -310,9 +317,10 @@ require_once 'components/head.php';
                               </span>
                             </p>
                             <div class="mt-2">
-                              <a href="detalhes_vaga.php?id=<?= $reserva['id_vaga'] ?>" class="btn btn-sm btn-outline-info">Ver Vaga</a>
+                              <a href="detalhes_vaga.php?id=<?= $reserva['id_vaga'] ?>"
+                                class="btn btn-sm btn-outline-info">Ver Vaga</a>
                               <?php if ($reserva['status'] == 'r'): // Só permite cancelar se estiver 'Reservado' 
-                              ?>
+                                      ?>
                                 <a href="cancelar_reserva.php?id_reserva=<?= $reserva['id_reserva'] ?>"
                                   class="btn btn-sm btn-outline-danger ms-2"
                                   onclick="return confirm('Tem certeza que deseja cancelar esta reserva? Esta ação não pode ser desfeita.');">
@@ -341,27 +349,33 @@ require_once 'components/head.php';
                         <?php foreach ($minhas_vagas_cadastradas as $vaga_cadastrada): ?>
                           <div class="col">
                             <div class="card h-100 shadow-sm">
-                              <?php
-                              // Verificação para garantir que o arquivo de imagem existe no servidor
-                              $caminho_foto = !empty($vaga_cadastrada['foto_vaga']) && file_exists($vaga_cadastrada['foto_vaga'])
-                                ? $vaga_cadastrada['foto_vaga']
-                                : 'assets/img/sem-imagem.jpg'; // Imagem padrão
-                              ?>
-                              <img src="<?= htmlspecialchars($caminho_foto) ?>" class="card-img-top" alt="Foto da Vaga: <?= htmlspecialchars($vaga_cadastrada['descricao']) ?>" style="height: 200px; object-fit: cover;">
-
+                              <?php if (!empty($vaga_cadastrada['foto_vaga']) && file_exists($vaga_cadastrada['foto_vaga'])): // Adicionada verificação file_exists 
+                                      ?>
+                                <img src="<?= htmlspecialchars($vaga_cadastrada['foto_vaga']) ?>" class="card-img-top"
+                                  alt="Foto da Vaga: <?= htmlspecialchars($vaga_cadastrada['descricao']) ?>"
+                                  style="height: 200px; object-fit: cover;">
+                              <?php else: ?>
+                                <div class="d-flex align-items-center justify-content-center"
+                                  style="height: 200px; background-color: #f0f0f0; color: #6c757d;">
+                                  <i class="bi bi-image fs-1"></i> <span class="ms-2">Sem Imagem</span>
+                                </div>
+                              <?php endif; ?>
                               <div class="card-body d-flex flex-column">
-
-                                <div class="mb-auto">
-                                  <h5 class="card-title text-primary"><?= htmlspecialchars($vaga_cadastrada['descricao']) ?></h5>
+                                <div>
+                                  <h5 class="card-title text-primary"><?= htmlspecialchars($vaga_cadastrada['descricao']) ?>
+                                  </h5>
                                   <p class="card-text small">
                                     <i class="bi bi-geo-alt-fill text-secondary me-1"></i>
                                     <?= htmlspecialchars($vaga_cadastrada['endereco'] . ', ' . $vaga_cadastrada['numero']) ?><br>
-                                    <span class="ms-3"><?= htmlspecialchars($vaga_cadastrada['bairro'] . ', ' . $vaga_cadastrada['cidade'] . ' - ' . $vaga_cadastrada['estado_uf_vaga']) ?></span>
+                                    <span
+                                      class="ms-3"><?= htmlspecialchars($vaga_cadastrada['bairro'] . ', ' . $vaga_cadastrada['cidade'] . ' - ' . $vaga_cadastrada['estado_uf_vaga']) ?></span>
                                   </p>
-                                  <p class="card-text fw-bold">Diária: R$ <?= htmlspecialchars(number_format($vaga_cadastrada['preco'], 2, ',', '.')) ?></p>
+                                  <p class="card-text fw-bold">Diária: R$
+                                    <?= htmlspecialchars(number_format($vaga_cadastrada['preco'], 2, ',', '.')) ?></p>
                                   <p class="card-text small mt-2">
                                     <strong>Status:</strong>
-                                    <span class="badge bg-<?= ($vaga_cadastrada['status_vaga'] == 'ativa') ? 'success' : 'secondary'; ?>">
+                                    <span
+                                      class="badge bg-<?= ($vaga_cadastrada['status_vaga'] == 'ativa') ? 'success' : 'secondary'; ?>">
                                       <?= ucfirst(htmlspecialchars($vaga_cadastrada['status_vaga'])) ?>
                                     </span>
                                   </p>
@@ -370,23 +384,16 @@ require_once 'components/head.php';
 
                               <div class="card-footer bg-light p-2 mt-auto">
                                 <div class="d-grid gap-2">
-                                  <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                  <a href="editVaga.php?id=<?= $vaga_cadastrada['id'] ?>"
+                                    class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-pencil-square me-1"></i>Editar Vaga
                                   </a>
-
                                   <?php if ($vaga_cadastrada['status_vaga'] == 'ativa'): ?>
-                                    <?php if ($vaga_cadastrada['tem_reserva_ativa_ou_futura']): ?>
-                                      <button class="btn btn-sm btn-outline-warning" disabled
-                                        title="Esta vaga não pode ser desativada pois possui reservas ativas ou futuras.">
-                                        <i class="bi bi-pause-circle me-1"></i>Desativar Vaga
-                                      </button>
-                                    <?php else: ?>
-                                      <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=desativar"
-                                        class="btn btn-sm btn-outline-warning"
-                                        onclick="return confirm('Tem certeza que deseja DESATIVAR esta vaga? Ela não aparecerá mais nas buscas.');">
-                                        <i class="bi bi-pause-circle me-1"></i>Desativar Vaga
-                                      </a>
-                                    <?php endif; ?>
+                                    <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=desativar"
+                                      class="btn btn-sm btn-outline-warning"
+                                      onclick="return confirm('Tem certeza que deseja DESATIVAR esta vaga? Ela não aparecerá mais nas buscas para novas reservas.');">
+                                      <i class="bi bi-pause-circle me-1"></i>Desativar Vaga
+                                    </a>
                                   <?php else: ?>
                                     <a href="mudar_status_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>&acao=ativar"
                                       class="btn btn-sm btn-outline-success"
@@ -394,7 +401,6 @@ require_once 'components/head.php';
                                       <i class="bi bi-play-circle me-1"></i>Ativar Vaga
                                     </a>
                                   <?php endif; ?>
-
                                   <a href="ver_reservas_vaga.php?id_vaga=<?= $vaga_cadastrada['id'] ?>"
                                     class="btn btn-sm btn-outline-info">
                                     <i class="bi bi-list-check me-1"></i>Ver Reservas
@@ -428,7 +434,7 @@ require_once 'components/head.php';
   <?php require_once 'components/footer.php'; ?>
 
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       if (typeof $.fn.mask === 'function') {
         $('#telefone').mask('(00) 00000-0000');
         $('#cpf').mask('000.000.000-00', {
@@ -448,7 +454,7 @@ require_once 'components/head.php';
       }
 
       // Salvar a aba ativa no localStorage e restaurar ao carregar (opcional, para persistência)
-      $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+      $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         localStorage.setItem('activeAccountTab', $(e.target).attr('href'));
       });
       var activeTab = localStorage.getItem('activeAccountTab');
@@ -463,12 +469,12 @@ require_once 'components/head.php';
     });
 
     // Script de validação Bootstrap (se não estiver global)
-    (function() {
+    (function () {
       'use strict'
       var forms = document.querySelectorAll('.needs-validation')
       Array.prototype.slice.call(forms)
-        .forEach(function(form) {
-          form.addEventListener('submit', function(event) {
+        .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
             if (!form.checkValidity()) {
               event.preventDefault()
               event.stopPropagation()
@@ -478,7 +484,7 @@ require_once 'components/head.php';
         })
     })()
 
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('#edit-telefone').mask('(00) 00000-0000');
       $('#edit-cpf').mask('000.000.000-00', {
         reverse: true
