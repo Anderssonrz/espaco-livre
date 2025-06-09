@@ -341,7 +341,7 @@ if ($stmt_pesquisa) {
                                                 // CASO 3: Vaga está DISPONÍVEL (e não é do usuário logado)
                                             } else {
                                             ?>
-                                                <a href="cadastrarVaga.php?id_vaga=<?= $linha['id']; ?>" class="btn btn-primary mt-auto w-100">
+                                                <a href="cadastrarReserva.php?id=<?= $linha['id']; ?>" class="btn btn-primary mt-auto w-100">
                                                     Reservar
                                                 </a>
                                             <?php
