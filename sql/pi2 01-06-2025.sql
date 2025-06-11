@@ -1,10 +1,9 @@
-pi2.sql
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 10/06/2025 às 01:33
+-- Tempo de geração: 11/06/2025 às 22:27
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -21,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `pi2`
 --
-
+CREATE SCHEMA IF NOT EXISTS `pi2` DEFAULT CHARACTER SET utf8;
+USE `pi2`;
 -- --------------------------------------------------------
 
 --
