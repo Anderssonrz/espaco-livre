@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 01/06/2025 às 23:41
+-- Tempo de geração: 11/06/2025 às 19:09
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -20,8 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Banco de dados: `pi2`
 --
-CREATE SCHEMA IF NOT EXISTS `pi2` DEFAULT CHARACTER SET utf8;
-USE `pi2`;
+
 -- --------------------------------------------------------
 
 --
@@ -94,9 +93,8 @@ CREATE TABLE `reservas` (
 --
 
 INSERT INTO `reservas` (`id_reserva`, `id_usuario`, `id_vaga`, `id_uf`, `cidade`, `bairro`, `endereco`, `numero`, `complemento`, `quant_dias`, `valor_reserva`, `status`, `data_reserva`) VALUES
-(5, 1, 1, 0, 'Jaraguá do Sul', 'Centro', 'Seu Madruga', '33', 'Próximo a farmácia BB', 5, 18.50, 'c', '2025-05-14'),
-(6, 1, 6, 0, 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', 4, 20.00, 'r', '2025-05-14'),
-(7, 11, 7, 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1', 'casa', 1, 23.00, 'r', '2025-05-31'),
+(6, 1, 9, 0, 'Jaraguá do Sul', 'Centro', 'Av. Mal. Deodoro da Fonseca', '915', 'Próximo ao calçadão', 4, 20.00, 'r', '2025-05-14'),
+(7, 11, 13, 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1', 'casa', 1, 23.00, 'r', '2025-05-31'),
 (8, 1, 8, 24, 'Jaraguá do Sul', 'Vieira', 'Rua Gustavo Lessmann', '1350', 'casa', 9, 207.00, 'r', '2025-05-31');
 
 -- --------------------------------------------------------
@@ -215,7 +213,8 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `vagas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `id_usuario` (`id_usuario`),
+  ADD KEY `vagas_ibfk_1` (`id_uf`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
