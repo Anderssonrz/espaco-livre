@@ -19,8 +19,8 @@ $display_preco_min = ($filtro_preco_min !== null && $filtro_preco_min !== '') ? 
 $display_preco_max = ($filtro_preco_max !== null && $filtro_preco_max !== '') ? htmlspecialchars($filtro_preco_max) : '1000';
 
 // Filtros de data
-$filtro_data_inicio = trim($filtros['data_inicio'] ?? '');
-$filtro_data_fim = trim($filtros['data_fim'] ?? '');
+// $filtro_data_inicio = trim($filtros['data_inicio'] ?? '');
+// $filtro_data_fim = trim($filtros['data_fim'] ?? '');
 
 
 // --- Construção da Query SQL ---
@@ -203,6 +203,7 @@ if ($stmt_pesquisa) {
                             <hr>
                             <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
 
+                                <!-- Filtrar por data 
                                 <div class="row g-2 mb-3">
                                     <div class="col-12">
                                         <label for="filter_data_inicio" class="form-label">Data de Início</label>
@@ -216,7 +217,7 @@ if ($stmt_pesquisa) {
                                             value="<?= htmlspecialchars($filtro_data_fim) ?>"
                                             min="<?= date('Y-m-d') ?>">
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="mb-3">
                                     <label for="descricao" class="form-label">Descrição</label>
